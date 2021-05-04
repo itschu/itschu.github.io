@@ -45,5 +45,31 @@ function prodDetails($con, $prodId=0){
     
 }
 
+function insertData($con, $params=null, $table="cart"){
+	if($params != null){
 
+		$columns = implode(',', array_keys($params));
+		$values = array_map(function($i){
+			return "'".$i."'";
+		},$params);
+		$values = implode(',', array_values($values));
+
+		//echo $values;
+		$sql = "INSERT INTO $table($columns) VALUES ($values)";
+		if($query = $con->query($sql)){
+
+		}else{
+			echo $con->error;
+		}
+	}
+}
+
+function addToCart($con, $user, $item, $quantity){
+	$params = array(
+		'user_id'=>"$user",
+		'prod_id'=>"$item",
+		'quantity'=>"$quantity"
+	);
+	$res = insertData($con, $params);
+}
 ?>

@@ -10,8 +10,8 @@
                     <div class="img-container">
                         <div class="tag _dsct">-8%</div>
                         <img src="<?php echo $item['img_1']; ?>" alt="" />
-                        <div class="addCart">
-                            <i class="fas fa-shopping-cart"></i>
+                        <div class="addCart addNow">
+                            <i class="fas fa-shopping-cart addNow"></i>
                         </div>
 
                         <ul class="side-icons">
@@ -29,6 +29,7 @@
                             
                         </div>
                     </div>
+                    <input type='hidden' value="<?php echo $item['unique_key'] ?>" />
                 </a>
             </div>
         <?php 

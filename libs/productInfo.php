@@ -5,7 +5,7 @@
         if($item_id == $item['unique_key']): 
             // echo $item['unique_key'];
 ?>
-
+            <input type="hidden" value="<?php echo $item['unique_key'] ?>" class="prod-id"/>
             <section class="section product-details__section">
                 <div class="product-detail__container">
                 <div class="product-detail__left">
@@ -52,7 +52,7 @@
                     </div>
 
                     <div class="product-details__btn">
-                    <a class="add" href="#">
+                    <a class="add" href="#" >
                         <span> 
                         <svg>
                             <use xlink:href="../assets/images/sprite.svg#icon-cart-plus"></use>
@@ -72,7 +72,7 @@
 
                 <div class="product-detail__right">
                     <div class="product-detail__content">
-                    <h3><?php echo $item['name']; ?></h3>
+                    <h3 id="product-title"><?php echo $item['name']; ?></h3>
                     <div class="price">
                         <span class="new__price">₦<?php echo $item['price']; ?></span>
                         <input type="hidden" name="price" class="item_price" value="<?php echo $item['price']; ?>" />

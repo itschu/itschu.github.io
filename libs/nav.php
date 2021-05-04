@@ -71,7 +71,7 @@
                     <a href="./cart.php">
                         <span>
                             <img src="../assets/images/shoppingBag.svg" alt="" />
-                            <small class="count d-flex">0</small>
+                            <small class="count d-flex cart-items">0</small>
                         </span>
                     </a>
                     <span><img src="../assets/images/search.svg" alt="" /></span>

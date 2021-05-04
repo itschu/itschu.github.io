@@ -3,6 +3,7 @@
     require_once('../config/functions.php');
     $allProducts = getProducts($con);
     shuffle($allProducts);
+    
 ?>
 
 <!DOCTYPE html>
