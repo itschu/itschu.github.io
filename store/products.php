@@ -38,7 +38,11 @@
     <!-- PRODUCTS -->
     
     <?php require_once('../libs/all-products.php') ?>
-    
+   
+    <div class="alertMessage" style="display: flex; justify-content: center;">
+        
+    </div>
+
     <!-- Footer -->
     <?php require_once('../libs/footer.php') ?>
     <!-- End Footer -->
@@ -47,7 +51,7 @@
     <script src="../assets/js/products.js"></script>
     <script src="../assets/js/slider.js"></script>
     <script src="../assets/js/index.js"></script>
-
+    <script src="../assets/js/Pagination.js"> </script>
 </body>
 
 </html>

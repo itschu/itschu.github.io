@@ -1656,6 +1656,19 @@ th:last-child {
   .brands li img {
     height: 9rem;
   }
+
+    .section .product-layout {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap:1rem;
+    }
+    .products-layout {
+        padding: 0 2rem;
+    }
+    .col-1-of-4 {
+        display: flex;
+        justify-content: space-around;
+    }
 }
 
 
@@ -1715,4 +1728,37 @@ span i.far:hover .tooltiptext {
 
 .price span:nth-child(1){
   font-weight: 600;
+}
+
+
+
+/* The alert message box */
+.alert {
+    padding: 15px;
+    background-color: #f44336; /* Red */
+    color: white;
+    opacity: 1;
+    position : fixed;
+    top: 70px;
+    width : 90%;
+    z-index: 1001;
+    text-align: center;
+    transition: opacity 0.6s;
+}
+
+/* The close button */
+.closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* When moving the mouse over the close button */
+.closebtn:hover {
+    color: black;
 }

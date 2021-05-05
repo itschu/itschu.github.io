@@ -53,6 +53,7 @@ let storage = 0;
 let cartArray = []; 
 let thisItem = '';
 let dontAdd = false;
+let localStore = localStorage.getItem('allItems');
 // Picture List 
 
 const picList = [pic1, pic2, pic3, pic4, pic5];
@@ -227,12 +228,8 @@ const addToCart2 = () =>{
 }
 
 const setValues = () =>{
-
     if(localStorage.getItem('cartNum')){
         storage = parseInt(localStorage.getItem('cartNum'));
-        storage += 1;
-        localStorage.setItem('cartNum', storage);
-        cart.innerText = storage;
         cartArray = JSON.parse(localStorage.getItem('allItems'))
 
         cartArray.forEach( i => {
@@ -249,9 +246,15 @@ const setValues = () =>{
                     i.quantity += parseInt(thisItem.quantity);
                 }
                 return i;
-            })
+            });
+            showMessage('Item quantity has been updated in cart successfully!');
         }else{
+            storage += 1;
+            localStorage.setItem('cartNum', storage);
+            cart.innerText = storage;
             cartArray.push(thisItem);
+            showMessage('Item has been added to cart successfully!');
+
         }
         dontAdd = false;
 
@@ -259,6 +262,7 @@ const setValues = () =>{
         localStorage.setItem('cartNum', 1);
         cart.innerText = 1;
         cartArray.push(thisItem);
+        showMessage('Item has been added to cart successfully!');
     }
 
     //updating local storage
@@ -279,3 +283,87 @@ if(addToCartButton){
     });
 };
 
+const showCartItemOnUI = () =>{
+    if(localStore){
+       let allData = JSON.parse(localStore);
+       const cartContainer = document.querySelector('.cart');
+       let totalPrice = 0;
+        cartContainer.innerHTML = `
+            <table>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                </tr>
+                ${allData.map(el => {
+                        const thisTotal = (parseFloat(el.price) * parseInt(el.quantity));
+
+                        totalPrice += parseFloat(thisTotal);
+                        return `
+                                <tr>
+                                    <td>
+                                    <div class="cart-info">
+                                        <img src="${el.url}" alt="" />
+                                        <div>
+                                        <p>${el.name}</p>
+                                        <span>Price: ₦${el.price}</span>
+                                        <br />
+                                        <a href="#">remove</a>
+                                        </div>
+                                    </div>
+                                    </td>
+                                    <td><input type="number" value="${el.quantity}" min="1" /></td>
+                                    <td>₦${thisTotal.toFixed(2)}</td>
+                                </tr>
+                            
+                            
+                        `
+                    })
+                }
+
+            </table>
+
+            <div class="total-price">
+                <table>
+                    <tr>
+                    <td>Subtotal</td>
+                    <td>₦${totalPrice.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                    <td>Tax</td>
+                    <td>₦50</td>
+                    </tr>
+                    <tr>
+                    <td>Total</td>
+                    <td>₦${(parseFloat(totalPrice) + 50).toFixed(2)}</td>
+                    </tr>
+                </table>
+                <a href="#" class="checkout btn">Proceed To Checkout</a>
+            </div>
+        `
+    }
+}
+
+const showMessage = (message) => {
+    const showMes = document.querySelector('.alertMessage');
+    showMes.innerHTML = `
+        <div class="alert alert-success" role="alert">
+            <span class="closebtn">&times;</span>
+            ${message}
+        </div>
+    `;
+    const close = document.getElementsByClassName("closebtn");
+    let i;
+    
+    for (i = 0; i < close.length; i++) {
+        close[i].onclick = function(){
+            var div = this.parentElement;
+            div.style.opacity = "0";
+            setTimeout(function(){ div.style.display = "none"; }, 600);
+        }
+    }
+    setTimeout(() => {
+        const close = document.querySelector('.closebtn');
+        close.click();
+    }, 1100);
+}

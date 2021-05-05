@@ -34,106 +34,7 @@
 
         <!-- Cart Items -->
         <div class="container cart">
-            <table>
-            <tr>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Subtotal</th>
-            </tr>
-            <tr>
-                <td>
-                <div class="cart-info">
-                    <img src="../assets/images/prod4.png" alt="" />
-                    <div>
-                    <p>Product Name</p>
-                    <span>Price: ₦500.00</span>
-                    <br />
-                    <a href="#">remove</a>
-                    </div>
-                </div>
-                </td>
-                <td><input type="number" value="1" min="1" /></td>
-                <td>₦500.00</td>
-            </tr>
-            <tr>
-                <td>
-                <div class="cart-info">
-                    <img src="../assets/images/prod1.png" alt="" />
-                    <div>
-                    <p>Product Name</p>
-                    <span>Price: ₦900.00</span>
-                    <br />
-                    <a href="#">remove</a>
-                    </div>
-                </div>
-                </td>
-                <td><input type="number" value="1" min="1" /></td>
-                <td>₦900.00</td>
-            </tr>
-            <tr>
-                <td>
-                <div class="cart-info">
-                    <img src="../assets/images/prod3.png" alt="" />
-                    <div>
-                    <p>Product Name</p>
-                    <span>Price: ₦700.00</span>
-                    <br />
-                    <a href="#">remove</a>
-                    </div>
-                </div>
-                </td>
-                <td><input type="number" value="1" min="1" /></td>
-                <td>₦700.00</td>
-            </tr>
-            <tr>
-                <td>
-                <div class="cart-info">
-                    <img src="../assets/images/prod2.png" alt="" />
-                    <div>
-                    <p>Product Name</p>
-                    <span>Price: ₦600.00</span>
-                    <br />
-                    <a href="#">remove</a>
-                    </div>
-                </div>
-                </td>
-                <td><input type="number" value="1" min="1" /></td>
-                <td>₦600.00</td>
-            </tr>
-            <tr>
-                <td>
-                <div class="cart-info">
-                    <img src="../assets/images/ppp.png" alt="" />
-                    <div>
-                    <p>Product Name</p>
-                    <span>Price: ₦600.00</span>
-                    <br />
-                    <a href="#">remove</a>
-                    </div>
-                </div>
-                </td>
-                <td><input type="number" value="1" min="1" /></td>
-                <td>₦600.00</td>
-            </tr>
-            </table>
-
-            <div class="total-price">
-            <table>
-                <tr>
-                <td>Subtotal</td>
-                <td>₦200</td>
-                </tr>
-                <tr>
-                <td>Tax</td>
-                <td>₦50</td>
-                </tr>
-                <tr>
-                <td>Total</td>
-                <td>₦250</td>
-                </tr>
-            </table>
-            <a href="#" class="checkout btn">Proceed To Checkout</a>
-            </div>
+            
         </div>
 
         <!-- Footer -->
@@ -144,5 +45,7 @@
         <script src="../assets/js/products.js"></script>
         <script src="../assets/js/slider.js"></script>
         <script src="../assets/js/index.js"></script>
+        <script> showCartItemOnUI(); </script>
   </body>
 </html>
+

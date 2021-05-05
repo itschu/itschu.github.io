@@ -81,6 +81,11 @@
         </div>
     </section>        
 
+
+    <div class="alertMessage" style="display: flex; justify-content: center;">
+        
+    </div>
+    
     <!-- Products -->
     <?php require_once('../libs/top-selling.php') ?>
 
