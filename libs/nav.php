@@ -20,27 +20,27 @@
                         <div class="row">
                         <header>Frozen Foods</header>
                         <ul class="mega-links">
-                            <li id="fBeef"><a href="#">Frozen Beef</a></li>
-                            <li id="fChicken"><a href="#">Frozen Chicken</a></li>
-                            <li id="fFish"><a href="#">Frozen Fish</a></li>
-                            <li id="mFFoods"><a href="#">More Frozen Foods</a></li>
+                            <li id="fBeef"><a href="./products.php?search=Frozen Beef">Frozen Beef</a></li>
+                            <li id="fChicken"><a href="./products.php?search=Frozen Chicken">Frozen Chicken</a></li>
+                            <li id="fFish"><a href="./products.php?search=Frozen Fish">Frozen Fish</a></li>
+                            <li id="mFFoods"><a href="./products.php?search=">More Frozen Foods</a></li>
                         </ul>
                         </div>
                         <div class="row">
                         <header>Vegetables</header>
                         <ul class="mega-links">
-                            <li id="vegTomato"><a href="#">Tomatoes</a></li>
-                            <li id="vegPepper"><a href="#">Peppers</a></li>
-                            <li id="vegLeaves"><a href="#">Cooking Leaves</a></li>
-                            <li id="vegOther"><a href="#">Others</a></li>
+                            <li id="vegTomato"><a href="./products.php?search=Tomatoes">Tomatoes</a></li>
+                            <li id="vegPepper"><a href="./products.php?search=Peppers">Peppers</a></li>
+                            <li id="vegLeaves"><a href="./products.php?search=Cooking Leaves">Cooking Leaves</a></li>
+                            <li id="vegOther"><a href="./products.php?search=Others">Others</a></li>
                         </ul>
                         </div>
                         <div class="row">
                         <header>Food Grains</header>
                         <ul class="mega-links">
-                            <li id="grainRice"><a href="#">Rice</a></li>
-                            <li id="grainGarri"><a href="#">Garri</a></li>
-                            <li id="grainBbean"><a href="#">Beans</a></li>
+                            <li id="grainRice"><a href="./products.php?search=Rice">Rice</a></li>
+                            <li id="grainGarri"><a href="./products.php?search=Garri">Garri</a></li>
+                            <li id="grainBbean"><a href="./products.php?search=Beans">Beans</a></li>
                         </ul>
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                 <li>
                     <a href="" class="desktop-item">Account <span><i class="fas fa-chevron-down"></i></span></a>
                     <input type="checkbox" id="showdrop2" />
-                    <label for="showdrop2" class="mobile-item">Page <span><i class="fas fa-chevron-down"></i></span></label>
+                    <label for="showdrop2" class="mobile-item">Account <span><i class="fas fa-chevron-down"></i></span></label>
                     <ul class="drop-menu2">
                     <li><a href="">Login</a></li>
                     <li><a href="">Sign Up</a></li>

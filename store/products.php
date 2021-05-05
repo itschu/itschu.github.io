@@ -3,6 +3,17 @@
     require_once('../config/functions.php');
     $allProducts = getProducts($con, null);
     shuffle($allProducts);
+    
+    if(isset($_GET['search'])){
+        $searchQuery = $_GET['search'];
+        $searchProducts = searchProducts($con, $searchQuery);
+    }else{
+        $searchQuery = null;
+    }
+
+    if(empty($searchProducts)){
+        $searchProducts = $allProducts;
+    }
 ?>
 
 <!DOCTYPE html>
@@ -33,11 +44,19 @@
 
 <body>
      <!-- Navigation -->
-    <?php require_once('../libs/nav.php') ?>
+    <?php 
+        require_once('../libs/nav.php') 
+    ?>
 
     <!-- PRODUCTS -->
     
-    <?php require_once('../libs/all-products.php') ?>
+    <?php 
+        if($searchQuery == null){
+            require_once('../libs/all-products.php');
+        }else{
+            require_once('../libs/search-products.php');
+        }
+    ?>
    
     <div class="alertMessage" style="display: flex; justify-content: center;">
         

@@ -216,7 +216,7 @@ const addToCart = (e, el, amount=1) => {
         let prodId = el.children[1].children[1].innerText;
         let prodPrice = el.children[1].children[2].children[2].value;
         let url = el.children[0].children[0].children[1].attributes[0].nodeValue;
-
+        console.log(el.children[0].children[0].children);
         thisItem = new Item(prodId, prodPrice, amount, url, el.children[2].value);
         setValues();
     }

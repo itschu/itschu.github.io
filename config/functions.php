@@ -25,6 +25,26 @@ function getProducts($con, $limit=16){
     
 }
 
+function searchProducts($con, $string){
+	//$password = hash('sha512', $password);
+	
+	$sql = "SELECT * FROM products_all  WHERE category = '$string' ";
+
+    $query = $con->query($sql);
+	$rows = $query->num_rows;
+    
+	if($rows > 0){
+		$result = array();  
+        while($newRes = $query->fetch_array()){
+            $result[] = $newRes;
+        }
+		return $result;
+	} else{
+		return $rows;
+	}
+    
+}
+
 
 function prodDetails($con, $prodId=0){
 	//$password = hash('sha512', $password);

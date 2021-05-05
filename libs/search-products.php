@@ -2,14 +2,13 @@
     $prodCat = array_map(function($curr){
         return $curr['category'];
     }, $allProducts);
-    
     $uniqueCat = array_unique($prodCat);
     sort($uniqueCat);
+
 
     $nn = array_map(function($curr){
         return $curr['name'];
     }, $allProducts);
-    
     $uniqueName = array_unique($nn);
     sort($uniqueName);
 ?>
@@ -134,7 +133,7 @@
             </form>
 
             <div class="product-layout">
-                <?php foreach($allProducts as $item) : ?>
+                <?php foreach($searchProducts as $item) : ?>
 
                     <div class="product">
                         <a href="./productDetails.php?prod=<?php echo $item['unique_key'] ?>">
