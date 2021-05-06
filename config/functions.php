@@ -65,7 +65,7 @@ function prodDetails($con, $prodId=0){
     
 }
 
-function insertData($con, $params=null, $table="cart"){
+function insertData($con, $params=null, $uId=null, $prodId=null, $auant=null, $table="cart"){
 	if($params != null){
 
 		$columns = implode(',', array_keys($params));
@@ -74,22 +74,41 @@ function insertData($con, $params=null, $table="cart"){
 		},$params);
 		$values = implode(',', array_values($values));
 
-		//echo $values;
-		$sql = "INSERT INTO $table($columns) VALUES ($values)";
-		if($query = $con->query($sql)){
+		if($uId !== null || $prodId !== null){ 
+			$sql = "SELECT * FROM $table WHERE user_id = '$uId' AND prod_id = '$prodId' ";
+			
+			if($query = $con->query($sql)){ 
 
+				$count = $query->num_rows;
+				// echo $count;
+				
+				if($count >= 1){
+					$sql = "UPDATE $table SET quantity='$auant'  WHERE user_id = '$uId' AND prod_id = '$prodId'";
+					$con->query($sql);
+				}else{
+					$sql = "INSERT INTO $table($columns) VALUES ($values)";
+					$con->query($sql);
+				}
+			}
 		}else{
-			echo $con->error;
+			//echo $values;
+			$sql = "INSERT INTO $table($columns) VALUES ($values)";
+			if($query = $con->query($sql)){
+
+			}else{
+				echo $con->error;
+			}
 		}
 	}
 }
 
 function addToCart($con, $user, $item, $quantity){
+
 	$params = array(
 		'user_id'=>"$user",
 		'prod_id'=>"$item",
 		'quantity'=>"$quantity"
 	);
-	$res = insertData($con, $params);
+	$res = insertData($con, $params, $user, $item, $quantity);
 }
 ?>

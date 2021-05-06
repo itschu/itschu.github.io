@@ -19,7 +19,7 @@
   <!-- Custom StyleSheet -->
   <link rel="stylesheet" href="../assets/css/styles.css" />
   <link rel="stylesheet" href="../assets/css/prod.css" />
-  <title>Zimarex - Ecommerce Website</title>
+  <title>Zimarex - Ecommerce Webstore</title>
 
   <!-- fonts -->
   <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -76,6 +76,9 @@
                 setTimeout(function(){ div.style.display = "none"; }, 600);
             }
         }
+
+        const getTitle = document.querySelector('#product-title').innerText;
+        document.title = `${getTitle} - Zimarex | Ecommerce Webstore`;
     </script>
 </body>
 

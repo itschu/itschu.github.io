@@ -74,7 +74,7 @@
                             <small class="count d-flex cart-items">0</small>
                         </span>
                     </a>
-                    <span><img src="../assets/images/search.svg" alt="" /></span>
+                    <!-- <span><img src="../assets/images/search.svg" alt="" /></span> -->
                 </li>
             </ul>
             <label for="" class="btn open-btn"><i class="fas fa-bars"></i></label>

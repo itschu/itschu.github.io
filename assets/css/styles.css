@@ -111,6 +111,7 @@ nav .wrapper {
 .nav-list a {
   color: var(--black);
   font-size: 1.5rem;
+  text-decoration: none;
   padding: 0.9rem 1.5rem;
   border-radius: 0.5rem;
   transition: all 300ms ease;

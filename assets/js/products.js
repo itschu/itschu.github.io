@@ -130,7 +130,6 @@ if (detail) {
   });
 }
 
-
 (function(){
     //localStorage.clear()
     //setting the cart 
@@ -141,6 +140,10 @@ if (detail) {
 
     if(!localStorage.getItem('allItems')){
         localStorage.setItem('allItems', cartArray);
+    }
+
+    if(!localStorage.getItem('userId')){
+        localStorage.setItem('userId', 0);
     }
 
     const plus = document.querySelector(".plus-btn");
@@ -314,7 +317,7 @@ const showCartItemOnUI = () =>{
                     <td class="final-price"> </td>
                     </tr>
                 </table>
-                <a href="#" class="checkout btn">Proceed To Checkout</a>
+                <a href="moveToCart.php" class="checkout btn">Proceed To Checkout</a>
             </div>
         `;
         const tableContainer = document.querySelector('.cart-table');
@@ -337,8 +340,8 @@ const showCartItemOnUI = () =>{
                             </div>
                         </div>
                         </td>
-                        <td><input type="number" value="${el.quantity}" min="1" /></td>
-                        <td>₦${thisTotal.toFixed(2)}</td>
+                        <td><input type="number" value="${el.quantity}" min="1" class="adjust-quantity"/></td>
+                        <td class="this-price">₦${thisTotal.toFixed(2)}</td>
                     </tr>
             `
             tableContainer.insertAdjacentHTML("beforeend", newMockUp);
@@ -348,11 +351,22 @@ const showCartItemOnUI = () =>{
         subPrice.innerText = "₦"+subPrices.reduce(reducer, 0).toFixed(2);
         finPrice.innerText = "₦"+(subPrices.reduce(reducer, 0) + 50).toFixed(2);
         const removeBtn = document.querySelectorAll('.removeItem');
+        const chngQty = document.querySelectorAll('.adjust-quantity');
 
         Array.from(removeBtn).forEach( i => {
             i.addEventListener('click',(ev)=>{
                 ev.preventDefault();
                 removeFromCart(ev.target);
+            });
+        });
+
+        Array.from(chngQty).forEach( i => {
+            i.addEventListener('change',(ev)=>{
+                const priceNode = i.parentNode.parentNode.children[2];
+                const priceNowNode = i.parentNode.parentNode.children[0].children[0].children[1].children[1];
+                if(i.value){
+                    changeQuantity(i.value, priceNode, priceNowNode);
+                }
             });
         });
 
@@ -399,8 +413,8 @@ const removeFromCart = (d) => {
         }
     });
     showMessage('Item has been removed from cart successfully!');
-    //localStorage.setItem('allItems', JSON.stringify(newStore));
-    //localStorage.setItem('cartNum', itemNum);
+    localStorage.setItem('allItems', JSON.stringify(newStore));
+    localStorage.setItem('cartNum', itemNum);
 }
 
 const calculateSubTotal = (amount, quantity, type=true) => {
@@ -427,3 +441,19 @@ const calculateSubTotal = (amount, quantity, type=true) => {
 }
 
 const reducer = (accumulator, currentValue) => accumulator + currentValue;
+
+const changeQuantity = (val, nod, thisPrice) => {
+    let prevPrice = nod.innerText;
+    prevPrice = prevPrice.replace("₦", '');
+    prevPrice = parseFloat(prevPrice);
+
+    innerPrice = thisPrice.innerText.replace("Price: ₦",'');
+    innerPrice = parseFloat(innerPrice);
+
+    let setToThis = innerPrice * parseFloat(val);
+    
+    let subPrice = setToThis - prevPrice;
+
+    nod.innerText = setToThis.toFixed(2);
+    calculateSubTotal(subPrice,1,false);
+}
