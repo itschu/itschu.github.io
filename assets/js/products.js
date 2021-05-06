@@ -216,7 +216,6 @@ const addToCart = (e, el, amount=1) => {
         let prodId = el.children[1].children[1].innerText;
         let prodPrice = el.children[1].children[2].children[2].value;
         let url = el.children[0].children[0].children[1].attributes[0].nodeValue;
-        console.log(el.children[0].children[0].children);
         thisItem = new Item(prodId, prodPrice, amount, url, el.children[2].value);
         setValues();
     }
@@ -224,12 +223,13 @@ const addToCart = (e, el, amount=1) => {
 
 const addToCart2 = () =>{
     e.preventDefault()
-    console.log(e);
 }
 
 const setValues = () =>{
     if(localStorage.getItem('cartNum')){
         storage = parseInt(localStorage.getItem('cartNum'));
+
+        //getting data from local storage
         cartArray = JSON.parse(localStorage.getItem('allItems'))
 
         cartArray.forEach( i => {
@@ -287,39 +287,15 @@ const showCartItemOnUI = () =>{
     if(localStore){
        let allData = JSON.parse(localStore);
        const cartContainer = document.querySelector('.cart');
-       let totalPrice = 0;
+        let newMockUp;
+       let totalPrice = 0; 
         cartContainer.innerHTML = `
-            <table>
+            <table class="cart-table">
                 <tr>
                     <th>Product</th>
                     <th>Quantity</th>
                     <th>Subtotal</th>
                 </tr>
-                ${allData.map(el => {
-                        const thisTotal = (parseFloat(el.price) * parseInt(el.quantity));
-
-                        totalPrice += parseFloat(thisTotal);
-                        return `
-                                <tr>
-                                    <td>
-                                    <div class="cart-info">
-                                        <img src="${el.url}" alt="" />
-                                        <div>
-                                        <p>${el.name}</p>
-                                        <span>Price: ₦${el.price}</span>
-                                        <br />
-                                        <a href="#">remove</a>
-                                        </div>
-                                    </div>
-                                    </td>
-                                    <td><input type="number" value="${el.quantity}" min="1" /></td>
-                                    <td>₦${thisTotal.toFixed(2)}</td>
-                                </tr>
-                            
-                            
-                        `
-                    })
-                }
 
             </table>
 
@@ -327,7 +303,7 @@ const showCartItemOnUI = () =>{
                 <table>
                     <tr>
                     <td>Subtotal</td>
-                    <td>₦${totalPrice.toFixed(2)}</td>
+                    <td class="sub-price"></td>
                     </tr>
                     <tr>
                     <td>Tax</td>
@@ -335,12 +311,51 @@ const showCartItemOnUI = () =>{
                     </tr>
                     <tr>
                     <td>Total</td>
-                    <td>₦${(parseFloat(totalPrice) + 50).toFixed(2)}</td>
+                    <td class="final-price"> </td>
                     </tr>
                 </table>
                 <a href="#" class="checkout btn">Proceed To Checkout</a>
             </div>
-        `
+        `;
+        const tableContainer = document.querySelector('.cart-table');
+        const finPrice = document.querySelector('.final-price');
+        const subPrice = document.querySelector('.sub-price');
+        let subPrices = [];
+        allData.forEach(el => {
+            const thisTotal = (parseFloat(el.price) * parseInt(el.quantity));
+            totalPrice += parseFloat(thisTotal);
+            newMockUp = `
+                    <tr >
+                        <td>
+                        <div class="cart-info">
+                            <img src="${el.url}" alt="" />
+                            <div>
+                            <p>${el.name}</p>
+                            <span>Price: ₦${el.price}</span>
+                            <br />
+                            <a href="#" class="removeItem" id="${el.id}">remove</a>
+                            </div>
+                        </div>
+                        </td>
+                        <td><input type="number" value="${el.quantity}" min="1" /></td>
+                        <td>₦${thisTotal.toFixed(2)}</td>
+                    </tr>
+            `
+            tableContainer.insertAdjacentHTML("beforeend", newMockUp);
+            subPrices.push(thisTotal);
+        });
+
+        subPrice.innerText = "₦"+subPrices.reduce(reducer, 0).toFixed(2);
+        finPrice.innerText = "₦"+(subPrices.reduce(reducer, 0) + 50).toFixed(2);
+        const removeBtn = document.querySelectorAll('.removeItem');
+
+        Array.from(removeBtn).forEach( i => {
+            i.addEventListener('click',(ev)=>{
+                ev.preventDefault();
+                removeFromCart(ev.target);
+            });
+        });
+
     }
 }
 
@@ -367,3 +382,48 @@ const showMessage = (message) => {
         close.click();
     }, 1100);
 }
+
+const removeFromCart = (d) => {
+    const id = d.id;
+    let parentEl = d.parentElement.parentElement.parentElement.parentElement;
+    parentEl.parentElement.removeChild(parentEl);
+    let itemNum = parseInt(localStorage.getItem('cartNum'));
+    itemNum -= 1;
+    let store = JSON.parse(localStorage.getItem('allItems'));
+    let newStore = [];
+    store.forEach( (i) => {
+        if(id !== i.id){
+            newStore.push(i);
+        }else{
+           calculateSubTotal(i.price, i.quantity)
+        }
+    });
+    showMessage('Item has been removed from cart successfully!');
+    //localStorage.setItem('allItems', JSON.stringify(newStore));
+    //localStorage.setItem('cartNum', itemNum);
+}
+
+const calculateSubTotal = (amount, quantity, type=true) => {
+    
+    let multi = amount * quantity;
+    
+    const chngFinPrice = document.querySelector('.final-price');
+    const chngSubPrice = document.querySelector('.sub-price');
+    const checkOut = document.querySelector('.checkout');
+    let newTot = chngFinPrice.innerText.replace("₦",'');
+    let newSub = chngSubPrice.innerText.replace("₦",'');
+    
+    if(type){
+        chngFinPrice.innerText = "₦"+((parseFloat(newTot) - multi).toFixed(2));
+        chngSubPrice.innerText = "₦"+((parseFloat(newSub) - multi).toFixed(2));
+    }else{
+        chngFinPrice.innerText = "₦"+((parseFloat(newTot) + multi).toFixed(2));
+        chngSubPrice.innerText = "₦"+((parseFloat(newSub) + multi).toFixed(2));
+    }
+    let checkOutLimit = parseInt(newSub-multi) ; 
+    if(checkOutLimit < 1){
+        checkOut.setAttribute("href", "./");
+    }
+}
+
+const reducer = (accumulator, currentValue) => accumulator + currentValue;

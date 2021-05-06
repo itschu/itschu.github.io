@@ -24,7 +24,7 @@
             box-shadow: 0 5px 15px rgb(0 0 0 / 30%);
         }
     </style>
-    
+     
   </head>
 
   <body>
@@ -36,6 +36,11 @@
         <div class="container cart">
             
         </div>
+
+        <div class="alertMessage" style="display: flex; justify-content: center;">
+        
+        </div>
+
 
         <!-- Footer -->
         <?php require_once('../libs/footer.php') ?>
