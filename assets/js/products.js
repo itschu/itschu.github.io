@@ -44,6 +44,7 @@ const pic = document.getElementById("pic");
 const cart = document.querySelector(".cart-items");
 const navList = document.querySelector(".content");
 const addToCartButton = document.querySelector(".add");
+const buyButton = document.querySelector(".buy");
 const priceOfItem = document.querySelector(".item_price");
 const products = document.getElementsByClassName("product");
 const picProds = document.getElementsByClassName("picture");
@@ -224,11 +225,18 @@ const addToCart = (e, el, amount=1) => {
     }
 }
 
-const addToCart2 = () =>{
-    e.preventDefault()
+const addToCart2 = (noMsg=true) =>{
+    const title = document.querySelector('#product-title').innerText;
+    const priceItem = document.querySelector('.item_price').value;
+    const quantityofItem = document.querySelector('.counter-btn').value;
+    const getId = document.querySelector('.prod-id').value;
+
+    thisItem = new Item(title, priceItem, parseInt(quantityofItem), pic.attributes[0].nodeValue, getId);
+
+    setValues(noMsg);
 }
 
-const setValues = () =>{
+const setValues = (checkMsg=true) =>{
     if(localStorage.getItem('cartNum')){
         storage = parseInt(localStorage.getItem('cartNum'));
 
@@ -250,13 +258,17 @@ const setValues = () =>{
                 }
                 return i;
             });
-            showMessage('Item quantity has been updated in cart successfully!');
+            if(checkMsg){
+                showMessage('Item quantity has been updated in cart successfully!');
+            }
         }else{
             storage += 1;
             localStorage.setItem('cartNum', storage);
             cart.innerText = storage;
             cartArray.push(thisItem);
-            showMessage('Item has been added to cart successfully!');
+            if(checkMsg){
+                showMessage('Item has been added to cart successfully!');
+            }
 
         }
         dontAdd = false;
@@ -275,14 +287,15 @@ const setValues = () =>{
 if(addToCartButton){
     addToCartButton.addEventListener("click", e => {
         e.preventDefault();
-        const title = document.querySelector('#product-title').innerText;
-        const priceItem = document.querySelector('.item_price').value;
-        const quantityofItem = document.querySelector('.counter-btn').value;
-        const getId = document.querySelector('.prod-id').value;
+        addToCart2();
+    });
+};
 
-        thisItem = new Item(title, priceItem, parseInt(quantityofItem), pic.attributes[0].nodeValue, getId);
-
-        setValues();
+if(buyButton){
+    buyButton.addEventListener("click", e => {
+        e.preventDefault();
+        addToCart2(false);
+        window.location.href='moveToCart.php';
     });
 };
 
@@ -342,6 +355,7 @@ const showCartItemOnUI = () =>{
                         </td>
                         <td><input type="number" value="${el.quantity}" min="1" class="adjust-quantity"/></td>
                         <td class="this-price">₦${thisTotal.toFixed(2)}</td>
+                        <input type="hidden" value="${el.quantity}" class="old-val"/>
                     </tr>
             `
             tableContainer.insertAdjacentHTML("beforeend", newMockUp);
@@ -361,11 +375,19 @@ const showCartItemOnUI = () =>{
         });
 
         Array.from(chngQty).forEach( i => {
-            i.addEventListener('change',(ev)=>{
+            i.addEventListener('change',()=>{
                 const priceNode = i.parentNode.parentNode.children[2];
                 const priceNowNode = i.parentNode.parentNode.children[0].children[0].children[1].children[1];
-                if(i.value){
+                const getOld = i.parentNode.parentNode.children[3];            
+                if(parseInt(i.value)){
                     changeQuantity(i.value, priceNode, priceNowNode);
+                    const addId = i.parentNode.parentNode.children[0].children[0].children[1].children[3].id;
+                    let newQty =  parseInt(i.value) - parseInt(getOld.value);
+                    thisItem = new Item(null, null,newQty, null, addId);
+                    setValues(false);
+                    getOld.value = i.value;
+                }else{
+                    i.value = getOld.value;
                 }
             });
         });
@@ -409,7 +431,7 @@ const removeFromCart = (d) => {
         if(id !== i.id){
             newStore.push(i);
         }else{
-           calculateSubTotal(i.price, i.quantity)
+           calculateSubTotal(i.price, i.quantity, true)
         }
     });
     showMessage('Item has been removed from cart successfully!');
@@ -417,7 +439,7 @@ const removeFromCart = (d) => {
     localStorage.setItem('cartNum', itemNum);
 }
 
-const calculateSubTotal = (amount, quantity, type=true) => {
+const calculateSubTotal = (amount, quantity, type=true, ifInputLesser=true) => {
     
     let multi = amount * quantity;
     
@@ -435,7 +457,7 @@ const calculateSubTotal = (amount, quantity, type=true) => {
         chngSubPrice.innerText = "₦"+((parseFloat(newSub) + multi).toFixed(2));
     }
     let checkOutLimit = parseInt(newSub-multi) ; 
-    if(checkOutLimit < 1){
+    if(checkOutLimit < 1 && ifInputLesser){
         checkOut.setAttribute("href", "./");
     }
 }
@@ -454,6 +476,6 @@ const changeQuantity = (val, nod, thisPrice) => {
     
     let subPrice = setToThis - prevPrice;
 
-    nod.innerText = setToThis.toFixed(2);
-    calculateSubTotal(subPrice,1,false);
+    nod.innerText = "₦"+setToThis.toFixed(2);
+    calculateSubTotal(subPrice,1,false,false);
 }

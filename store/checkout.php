@@ -116,8 +116,10 @@
     <div class="row g-5">
       <div class="col-md-5 col-lg-4 order-md-last">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
-          <span class="text-primary">Your cart</span>
-          <span class="badge bg-primary rounded-pill">3</span>
+        <a href="./cart.php" style="border: 1px solid #ba0303; padding: 6px 15px; border-radius: 30px;">
+          <span class="text-primary">Return to cart</span>
+        </a>
+        <span class="badge bg-primary rounded-pill">3</span>
         </h4>
         <ul class="list-group mb-3">
           
@@ -165,11 +167,19 @@
               </div>
             </div> -->
 
-            <div class="col-12">
+            <div class="col-7">
               <label for="email" class="form-label"> <b>Email</b> <span class="text-muted"></span></label>
               <input type="email" class="form-control" id="email" placeholder="you@example.com" required>
               <div class="invalid-feedback">
                 Please enter a valid email address for shipping updates.
+              </div>
+            </div>
+
+            <div class="col-5">
+              <label for="phone number" class="form-label"> <b>Phone number</b> <span class="text-muted"></span></label>
+              <input type="number" class="form-control" id="phone-num" placeholder="0XXXXXXXXXX" required>
+              <div class="invalid-feedback">
+                Please enter a valid number for shipping updates.
               </div>
             </div>
 

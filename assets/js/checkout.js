@@ -19,5 +19,5 @@ const cartSpace = document.querySelector('.insert-cart');
         `;
         cartSpace.insertAdjacentHTML('beforebegin', mock);
     });
-last_price.innerText = `₦${n+50}`
+last_price.innerText = `₦${(n+50).toFixed(2)}`
 })()

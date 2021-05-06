@@ -296,6 +296,7 @@ Product Details
 .detail__content {
   position: relative;
   height: 46rem;
+  padding: 0 23px;
 }
 
 .detail__content .content {

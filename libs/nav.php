@@ -61,8 +61,8 @@
                     <input type="checkbox" id="showdrop2" />
                     <label for="showdrop2" class="mobile-item">Account <span><i class="fas fa-chevron-down"></i></span></label>
                     <ul class="drop-menu2">
-                    <li><a href="">Login</a></li>
-                    <li><a href="">Sign Up</a></li>
+                    <li><a href="./login.php">Login</a></li>
+                    <li><a href="./sign-up.php">Sign Up</a></li>
                     </ul>
                 </li>
                 <!-- icons -->
