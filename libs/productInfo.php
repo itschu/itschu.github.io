@@ -1,8 +1,15 @@
 <?php
-    $item_id = $_GET['prod'];
+    
+    if(isset($_GET['prod'])){
+        $item_id = $_GET['prod'];
+    }else{
+        $item_id = "";
+    }
     
     foreach($allProducts as $item) :
-        if($item_id == $item['unique_key']): 
+        // echo $item['unique_key']."<br>";
+        if($item_id == $item['unique_key']):
+            $productFound = true;
             // echo $item['unique_key'];
 ?>
             <input type="hidden" value="<?php echo $item['unique_key'] ?>" class="prod-id"/>
@@ -73,7 +80,7 @@
                 <div class="product-detail__right">
                     <div class="product-detail__content">
                     <h3 id="product-title"><?php echo $item['name']; ?></h3>
-                    <div class="price">
+                    <div class="prices">
                         <span class="new__price">₦<?php echo $item['price']; ?></span>
                         <input type="hidden" name="price" class="item_price" value="<?php echo $item['price']; ?>" />
                     </div>
@@ -199,21 +206,21 @@
 
                     <div class="section__titles category__titles ">
                     <div class="section__title detail-btn active" data-id="description">
-                        <span class="dot"></span>
+                        <!-- <span class="dot"></span> -->
                         <h1 class="primary__title">Description</h1>
                     </div>
                     </div>
 
                     <div class="section__titles">
                     <div class="section__title detail-btn" data-id="reviews">
-                        <span class="dot"></span>
+                        <!-- <span class="dot"></span> -->
                         <h1 class="primary__title">Reviews</h1>
                     </div>
                     </div>
 
                     <div class="section__titles">
                     <div class="section__title detail-btn" data-id="shipping">
-                        <span class="dot"></span>
+                        <!-- <span class="dot"></span> -->
                         <h1 class="primary__title">Shipping Details</h1>
                     </div>
                     </div>
@@ -277,4 +284,17 @@
 <?php
         endif;
     endforeach;
+
+    if(!$productFound){
+        echo "
+            <div class='no-product'> 
+                <p style='text-align: center;'> 
+                    Sorry <br> Product Not Found!!
+                </p> 
+                <br><br>
+                <button class='no-prod-button'>
+                    <a href='./products.php'> All Products </a> 
+                </button>
+            </div>";
+    }
 ?>

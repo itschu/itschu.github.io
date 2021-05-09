@@ -183,8 +183,8 @@ nav .wrapper {
 }
 
 .content .row img {
-  width: 100%;
-  height: 100%;
+  width: 16em;
+  height: 220px;
   object-fit: cover;
 }
 
@@ -274,7 +274,7 @@ nav .wrapper {
 
   .nav-list a {
     display: block;
-    font-size: 1.8rem;
+    font-size: 1.57rem;
     padding: 0 2rem;
     color: var(--black);
   }
@@ -314,7 +314,7 @@ nav .wrapper {
 
   .nav-list .mobile-item {
     display: block;
-    font-size: 1.8rem;
+    font-size: 1.57rem;
     padding-left: 2rem;
     color: var(--black);
     cursor: pointer;
@@ -672,8 +672,8 @@ nav .wrapper {
 
 .product .img-container img {
   object-fit: cover;
-  min-height: 288px;
-  max-height: 288px;
+  min-height: 238px;
+  max-height: 238px;
   width: 100%;
 }
 
@@ -1015,10 +1015,10 @@ td img {
 
 .total-price a {
   display: inline-block;
-  background-color: var(--primary);
+  background-color: #c53232;
   color: var(--white);
   padding: 1.5rem 1.9rem;
-  font-weight: 700;
+  font-weight: 500;
   border-radius: 3rem;
 }
 
@@ -1267,7 +1267,9 @@ th:last-child {
   outline: none;
 }
 
-.col-3-of-4 form a {
+.col-3-of-4 form a, .col-3-of-4 form input.submitt{
+  border: none;
+  cursor: pointer;
   display: inline-block;
   padding: 1rem 3rem;
   border-radius: 4rem;
@@ -1277,7 +1279,7 @@ th:last-child {
   transition: all 300ms ease-in-out;
 }
 
-.col-3-of-4 form a:hover {
+.col-3-of-4 form a:hover, .col-3-of-4 form input.submitt:hover {
   background-color: var(--black);
 }
 
@@ -1287,7 +1289,8 @@ th:last-child {
   }
 
   .col-3-of-4 form {
-    flex-direction: column;
+    /* flex-direction: column; */
+    justify-content: space-evenly;
     align-items: end;
   }
 
@@ -1304,6 +1307,10 @@ th:last-child {
 @media only screen and (max-width: 567px) {
   .col-3-of-4 .product-layout {
     grid-template-columns: 1fr;
+  }
+
+  .col-3-of-4 form {
+    align-items: center;
   }
 }
 
@@ -1380,7 +1387,7 @@ th:last-child {
 
 
 .section {
-  padding: 5rem 0;
+  padding: 2rem 0;
 }
 
 .category .title {
@@ -1479,7 +1486,7 @@ th:last-child {
 
 @media only screen and (max-width: 996px) {
   .category-center {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -1611,6 +1618,11 @@ th:last-child {
   .gallary-item .content a {
     padding: 0.4rem 1rem;
     margin-top: 1rem;
+  }
+
+  .col-1-of-4 {
+      display: flex;
+      justify-content: space-around;
   }
 }
 

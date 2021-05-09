@@ -1,3 +1,8 @@
+<?php
+
+require_once('../config/functions.php');
+
+?>
 <!DOCTYPE html>
 <html lang="en">
  

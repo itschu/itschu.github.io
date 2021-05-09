@@ -1,18 +1,26 @@
 <?php
 
     require_once('../config/functions.php');
-    $allProducts = getProducts($con, null);
+
+    $allProducts = getProducts($con, 0);
     shuffle($allProducts);
     
     if(isset($_GET['search'])){
-        $searchQuery = $_GET['search'];
-        $searchProducts = searchProducts($con, $searchQuery);
+
+        $searchQuery = test_input(strtolower($_GET['search']));
+        $searchCat = test_input(strtolower($_GET['cat']));
+
+        $searchCat = "$searchCat";
+        $searchQuery = "%{$searchQuery}%";
+        // echo $searchQuery;
+        $searchProducts = searchProducts($con, $searchQuery, $searchCat);
+        // print_r($searchProducts);
     }else{
         $searchQuery = null;
     }
-
+    // echo count($allProducts);
     if(empty($searchProducts)){
-        $searchProducts = $allProducts;
+        //$searchProducts = $allProducts;
     }
 ?>
 
@@ -38,6 +46,25 @@
     <style>
         .addShadow{
             box-shadow: 0 5px 15px rgb(0 0 0 / 30%);
+        }
+
+        .cat-label{
+            color: #5f5f5f;
+            font-weight: 600;
+        }
+
+        @media only screen and (max-width: 567px){ 
+            .col-1-of-4 {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                /* justify-content: space-around; */
+            }
+        }
+
+        .col-1-of-4 h3 {
+            font-size: 2rem;
+            font-weight: inherit;
+            font-weight: 600;
         }
     </style>
 </head>

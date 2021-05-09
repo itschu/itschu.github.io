@@ -3,7 +3,7 @@
         <h2>Beest Selling Products</h2>
     </div>
 
-    <div class="product-layout">
+    <div class="product-layout owl-carousel owl-theme">
         <?php $count = 1; shuffle($allProducts); foreach($allProducts as $item) { ?>
             <div class="product">
                 <a href="./productDetails.php?prod=<?php echo $item['unique_key'] ?>">
@@ -34,9 +34,7 @@
             </div>
         <?php 
             $count++;
-            if($count > 4){
-                break;
-            }
+            
         }
         ?>
     </div>

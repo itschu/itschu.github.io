@@ -1,3 +1,45 @@
+<?php
+
+require_once('../config/functions.php');
+
+$firstName = "";
+$lastName = "";
+$number = "";
+$address = "";
+$address2 = "";
+$country = "";
+$state = "";
+$terms = "";
+$thisEmail = $session_email;
+
+if($thisEmail == 'Account'){
+    $thisEmail = "";
+    $newDetails = true;
+}
+if(isset($_GET['new-details'])){
+    $newDetails = true;
+    $thisEmail = "";
+}
+
+if(isset($session_email)){
+    $allItems = getBillDetails($con, $session_email);
+    if($allItems !== 0 && !isset($newDetails)){
+        foreach($allItems as $item){
+            $firstName = $item['firstName'];
+            $lastName = $item['lastName'];
+            $number = $item['number'];
+            $address = $item['address'];
+            $address2 = $item['address2'];
+            $country = $item['country'];
+            $state = $item['state'];
+            $terms = $item['terms'];
+        }
+    }
+}
+
+
+
+?>
 
 <!doctype html>
 <html lang="en">
@@ -135,170 +177,119 @@
             <button type="submit" class="btn btn-secondary">Redeem</button>
           </div>
         </form> -->
-      </div>
-      <div class="col-md-7 col-lg-8">
-        <h4 class="mb-3">Billing address</h4>
-        <form class="needs-validation" novalidate>
-          <div class="row g-3">
-            <div class="col-sm-6">
-              <label for="firstName" class="form-label"> <b>First name</b> </label>
-              <input type="text" class="form-control" id="firstName" placeholder="" value="" required>
-              <div class="invalid-feedback">
-                Valid first name is required.
-              </div>
-            </div>
+        </div>
+            <div class="col-md-7 col-lg-8">
+                <h4 class="mb-3">Billing address</h4>
+                <form class="needs-validation" novalidate action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" name="form" method="post">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="firstName" class="form-label"> <b>First name</b> </label>
+                            <input type="text" class="form-control" id="firstName" placeholder="" value="<?php echo $firstName; ?>" required name="firstName">
+                            <div class="invalid-feedback">
+                                Valid first name is required.
+                            </div>
+                        </div>
 
-            <div class="col-sm-6">
-              <label for="lastName" class="form-label"><b>Last name</b></label>
-              <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
-              <div class="invalid-feedback">
-                Valid last name is required.
-              </div>
-            </div>
-        
-            <!-- <div class="col-12">
-              <label for="username" class="form-label">Username</label>
-              <div class="input-group has-validation">
-                <span class="input-group-text">@</span>
-                <input type="text" class="form-control" id="username" placeholder="Username" required>
-              <div class="invalid-feedback">
-                  Your username is required.
-                </div>
-              </div>
-            </div> -->
+                        <div class="col-sm-6">
+                            <label for="lastName" class="form-label"><b>Last name</b></label>
+                            <input type="text" class="form-control" id="lastName" placeholder="" value="<?php echo $lastName; ?>" required name="lastName">
+                            <div class="invalid-feedback">
+                                Valid last name is required.
+                            </div>
+                        </div>
+                    
+                        <!-- <div class="col-12">
+                        <label for="username" class="form-label">Username</label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text">@</span>
+                            <input type="text" class="form-control" id="username" placeholder="Username" required>
+                        <div class="invalid-feedback">
+                            Your username is required.
+                            </div>
+                        </div>
+                        </div> -->
 
-            <div class="col-7">
-              <label for="email" class="form-label"> <b>Email</b> <span class="text-muted"></span></label>
-              <input type="email" class="form-control" id="email" placeholder="you@example.com" required>
-              <div class="invalid-feedback">
-                Please enter a valid email address for shipping updates.
-              </div>
-            </div>
+                        <div class="col-7">
+                            <label for="email" class="form-label"> <b>Email</b> <span class="text-muted"></span></label>
+                            <input type="email" class="form-control" id="email" placeholder="you@mail.com" required name="email" value="<?php echo $thisEmail; ?>" <?php if($thisEmail != '') echo "disabled" ?> >
+                            <div class="invalid-feedback">
+                                Please enter a valid email address for shipping updates.
+                            </div>
+                        </div>
 
-            <div class="col-5">
-              <label for="phone number" class="form-label"> <b>Phone number</b> <span class="text-muted"></span></label>
-              <input type="number" class="form-control" id="phone-num" placeholder="0XXXXXXXXXX" required>
-              <div class="invalid-feedback">
-                Please enter a valid number for shipping updates.
-              </div>
-            </div>
+                        <div class="col-5">
+                            <label for="phone number" class="form-label"> <b>Number</b> <span class="text-muted"></span></label>
+                            <input type="number" class="form-control" id="phone-num" placeholder="0XXXXXXXXXX" required name="number" value="<?php echo $number; ?>">
+                            <div class="invalid-feedback">
+                                Please enter a valid number for shipping updates.
+                            </div>
+                        </div>
 
-            <div class="col-12">
-              <label for="address" class="form-label"> <b>Address</b></label>
-              <input type="text" class="form-control" id="address" placeholder="1234 Main St" required>
-              <div class="invalid-feedback">
-                Please enter your shipping address.
-              </div>
-            </div>
+                        <div class="col-12">
+                            <label for="address" class="form-label"> <b>Address</b></label>
+                            <input type="text" class="form-control" id="address" placeholder="1234 Main St" required name="address" value="<?php echo $address; ?>">
+                            <div class="invalid-feedback">
+                                Please enter your shipping address.
+                            </div>
+                        </div>
 
-            <div class="col-12">
-              <label for="address2" class="form-label"> <b>Address 2</b> <span class="text-muted">(Optional)</span></label>
-              <input type="text" class="form-control" id="address2" placeholder="Apartment or suite">
-            </div>
+                        <div class="col-12">
+                            <label for="address2" class="form-label"> <b>Address 2</b> <span class="text-muted">(Optional)</span></label>
+                            <input type="text" class="form-control" id="address2" placeholder="Apartment or suite" name="address2" value="<?php echo $address2; ?>">
+                        </div>
 
-            <div class="col-md-6">
-              <label for="country" class="form-label"> <b>Country</b></label>
-              <select class="form-select" id="country" required>
-                <option value="" disabled selected>Choose...</option>
-                <option>Nigeria</option>
-              </select>
-              <div class="invalid-feedback">
-                Please select a valid country.
-              </div>
-            </div>
+                        <div class="col-md-6">
+                            <label for="country" class="form-label"> <b>Country</b></label>
+                            <select class="form-select" id="country" required name="country">
+                                <option value="" disabled selected>Choose...</option>
+                                <option value="Nigeria">Nigeria</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a valid country.
+                            </div>
+                        </div>
 
-            <div class="col-md-6">
-              <label for="state" class="form-label"> <b>State</b></label>
-              <select class="form-select" id="state" required>
-                <option value="" disabled selected>Choose...</option>
-                <option>Rivers</option>
-              </select>
-              <div class="invalid-feedback">
-                Please provide a valid state.
-              </div>
-            </div>
-          </div>
+                        <div class="col-md-6">
+                            <label for="state" class="form-label"> <b>State</b></label>
+                            <select class="form-select" id="state" required name="state">
+                                <option value="" disabled selected>Choose...</option>
+                                <option value="Rivers">Rivers</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please provide a valid state.
+                            </div>
+                        </div>
+                    </div>
 
-          <hr class="my-4">
+                    <hr class="my-4">
 
-          <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="same-address">
-            <label class="form-check-label" for="same-address">Shipping address is the same as my billing address</label>
-          </div>
-
-          <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="save-info">
-            <label class="form-check-label" for="save-info">Save this information for next time</label>
-          </div>
-
-          <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="terms" required>
-            <label class="form-check-label" for="save-info">I agree to the terms and conditions</label>
-          </div>
-
-          <hr class="my-4" style="opacity: 0.09">
-
-          <!-- 
-                <h4 class="mb-3">Payment</h4>
-
-                `<div class="my-3">
                     <div class="form-check">
-                    <input id="credit" name="paymentMethod" type="radio" class="form-check-input" checked required>
-                    <label class="form-check-label" for="credit">Credit card</label>
+                        <input type="checkbox" class="form-check-input" id="same-address" checked disabled name="same-address">
+                        <label class="form-check-label" for="same-address">Shipping address is the same as my billing address</label>
                     </div>
+
                     <div class="form-check">
-                    <input id="debit" name="paymentMethod" type="radio" class="form-check-input" required>
-                    <label class="form-check-label" for="debit">Debit card</label>
-                    </div>
-                    <div class="form-check">
-                    <input id="paypal" name="paymentMethod" type="radio" class="form-check-input" required>
-                    <label class="form-check-label" for="paypal">PayPal</label>
-                    </div>
-                </div>
-
-                <div class="row gy-3">
-                    <div class="col-md-6">
-                    <label for="cc-name" class="form-label">Name on card</label>
-                    <input type="text" class="form-control" id="cc-name" placeholder="" required>
-                    <small class="text-muted">Full name as displayed on card</small>
-                    <div class="invalid-feedback">
-                        Name on card is required
-                    </div>
+                        <input type="checkbox" class="form-check-input" id="terms" required name="terms" <?php echo $terms; ?>>
+                        <label class="form-check-label" for="save-info">I agree to the terms and conditions</label>
                     </div>
 
-                    <div class="col-md-6">
-                    <label for="cc-number" class="form-label">Credit card number</label>
-                    <input type="text" class="form-control" id="cc-number" placeholder="" required>
-                    <div class="invalid-feedback">
-                        Credit card number is required
-                    </div>
-                    </div>
+                    <?php if(isset($newDetails)){ ?>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="save-info">
+                            <label class="form-check-label" for="save-info">Save this information for next time</label>
+                        </div>
+                    <?php }else{ ?>
+                        <br>
+                        <a href="?new-details=set"> <b>Click here if you want to use another shipping details</b> </a>
+                    <?php } ?>
 
-                    <div class="col-md-3">
-                    <label for="cc-expiration" class="form-label">Expiration</label>
-                    <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
-                    <div class="invalid-feedback">
-                        Expiration date required
-                    </div>
-                    </div>
+                    <hr class="my-4" style="opacity: 0.09">
 
-                    <div class="col-md-3">
-                    <label for="cc-cvv" class="form-label">CVV</label>
-                    <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
-                    <div class="invalid-feedback">
-                        Security code required
-                    </div>
-                    </div>
-                </div>
-
-                <hr class`="my-4"> 
-            -->
-
-          <button class="w-100 btn btn-primary btn-lg" type="submit" style="border: none;">Continue</button>
-        </form>
-      </div>
-    </div>
-  </main>
+                    <button class="w-100 btn btn-primary btn-lg" type="submit" style="border: none; font-size: 0.9em;">Continue</button>
+                </form>
+            </div>
+        </div>
+    </main>
 
 </div>
     <?php require_once('../libs/footer.php') ?>

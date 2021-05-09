@@ -1,3 +1,41 @@
+<?php
+
+require_once('../config/functions.php');
+if($ThisMyPath == true){
+	header('location: checkout.php');
+}
+
+
+if(isset($_POST['reg'])){
+	$email = test_input($_POST['email']);
+	$password = test_input($_POST['password']);
+	$password2 = test_input($_POST['password2']);
+
+    if(!empty($email) && !empty($password) && !empty($password2)){
+        $check = checkAuthencity($email, $con);
+        if($check == true && ($password == $password2)){
+            $password = hash('sha512', $password);
+            $md5 = md5($email);
+	        $user_id = substr($md5,0,9);
+            $params = array(
+                'unique_id'=>"$user_id",
+                'email'=>"$email",
+                'password'=>"$password"
+            );
+            insertData($con, $params, null, null, null, 'users');
+            $succ = "<strong>Success!!</strong> This account has been created. <a href='./login.php'>  <b>Login here</b> </a>";
+        }else{
+            $error = "<strong>Sorry!!</strong> This email already exists, please <a href='./login.php'> <b>login here</b></a>";
+            //email exist or passwords dont match
+        }
+    }else{
+        $error = "<strong>Sorry!!</strong> All fields are required to register";
+        //all fields cannot be empty
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
  
@@ -26,6 +64,21 @@
         section{
             height: 600px;
         }
+
+        .alert{
+            position: relative;
+            margin-top: 40px;
+            margin-bottom : 20px;
+            z-index: 1;
+        }
+
+        .alert-danger{
+            background-color: #d81010;
+        }
+
+        .alert-success{
+            background-color: #04AA6D;
+        }
     </style>
 </head>
 
@@ -35,6 +88,23 @@
         require_once('../libs/nav.php') 
     ?>
 
+    <div class="div" style="width: 100%; display:flex; justify-content: center;">
+        <?php 
+        if(isset($_POST['reg']) && isset($error)) :
+            echo "<div class='alert alert-danger'>
+                $error
+            </div>";
+        endif;
+
+        if(isset($_POST['reg']) && isset($succ)) :
+            echo "<div class='alert alert-success'>
+                $succ
+            </div>";
+        endif;
+        ?>
+        
+    </div>
+
     <section>
         <div class="imgBx">
             <img src="../assets/images/login-img.jpg" alt="">
@@ -42,7 +112,7 @@
         <div class="contentBx">
             <div class="formBx">
                 <h2>Sign Up</h2>
-                <form action="../libs/log.php" id="form" method="post">
+                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" id="form" method="post" name="signUp-register">
 
                     <div class="inputBx form-control">
                         <span>Email</span>
@@ -72,6 +142,7 @@
                             Remember Me
                         </label>
                     </div> -->
+                    <input type="hidden" name="reg" value="set">
                     <div class="inputBx form-control">
                         <input type="submit" value="Register" name="register">
                     </div>

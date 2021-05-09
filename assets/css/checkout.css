@@ -275,7 +275,7 @@ nav .wrapper {
   }
 
   .wrapper .nav-list.show {
-    left: 0;
+    left: -20px;
   }
 
   .nav-list li {
@@ -284,7 +284,7 @@ nav .wrapper {
 
   .nav-list a {
     display: block;
-    font-size: 1.8rem;
+    font-size: 1.57rem;
     padding: 0 2rem;
     color: var(--black);
   }
@@ -324,7 +324,7 @@ nav .wrapper {
 
   .nav-list .mobile-item {
     display: block;
-    font-size: 1.8rem;
+    font-size: 1.57rem;
     padding-left: 2rem;
     color: var(--black);
     cursor: pointer;

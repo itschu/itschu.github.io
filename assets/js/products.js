@@ -55,6 +55,9 @@ let cartArray = [];
 let thisItem = '';
 let dontAdd = false;
 let localStore = localStorage.getItem('allItems');
+if(localStore == ''){
+    localStore = "[]";
+}
 // Picture List 
 
 const picList = [pic1, pic2, pic3, pic4, pic5];
@@ -289,7 +292,8 @@ if(addToCartButton){
         e.preventDefault();
         addToCart2();
     });
-};
+}; 
+
 
 if(buyButton){
     buyButton.addEventListener("click", e => {
@@ -323,20 +327,25 @@ const showCartItemOnUI = () =>{
                     </tr>
                     <tr>
                     <td>Tax</td>
-                    <td>₦50</td>
+                    <td class="tax">₦50</td>
                     </tr>
                     <tr>
                     <td>Total</td>
                     <td class="final-price"> </td>
                     </tr>
                 </table>
+                <br>
+                <br>
                 <a href="moveToCart.php" class="checkout btn">Proceed To Checkout</a>
             </div>
         `;
+        
         const tableContainer = document.querySelector('.cart-table');
         const finPrice = document.querySelector('.final-price');
         const subPrice = document.querySelector('.sub-price');
+        const tax = document.querySelector('.tax');
         let subPrices = [];
+
         allData.forEach(el => {
             const thisTotal = (parseFloat(el.price) * parseInt(el.quantity));
             totalPrice += parseFloat(thisTotal);
@@ -344,10 +353,12 @@ const showCartItemOnUI = () =>{
                     <tr >
                         <td>
                         <div class="cart-info">
-                            <img src="${el.url}" alt="" />
-                            <div>
-                            <p>${el.name}</p>
-                            <span>Price: ₦${el.price}</span>
+                            <a href="./productDetails.php?prod=${el.id}"> 
+                                <img src="${el.url}" alt="" />
+                                <div>
+                                <p> <b style="color: #000">${el.name}</b> </p>
+                                <span>Price: ₦${el.price}</span>
+                            </a> 
                             <br />
                             <a href="#" class="removeItem" id="${el.id}">remove</a>
                             </div>
@@ -362,8 +373,26 @@ const showCartItemOnUI = () =>{
             subPrices.push(thisTotal);
         });
 
+        if(allData === undefined || allData.length == 0){
+            const chckOutBtn = document.querySelector('.checkout');
+            chckOutBtn.attributes.href.value = './index.php';
+            chckOutBtn.innerText = 'Back to home';
+
+            tax.innerText = '₦0';
+            newMockUp = `
+                <tr> 
+                    <td colspan='1000'> 
+                        <p style="text-align: center; margin: 20px 0;"> 
+                            <strong> Your cart is empty!! </strong>
+                        </p> 
+                    </td>
+                </tr>`;
+            tableContainer.insertAdjacentHTML("beforeend", newMockUp);
+
+        }
         subPrice.innerText = "₦"+subPrices.reduce(reducer, 0).toFixed(2);
-        finPrice.innerText = "₦"+(subPrices.reduce(reducer, 0) + 50).toFixed(2);
+        let newTax = tax.innerText.replace('₦', '');
+        finPrice.innerText = "₦"+(subPrices.reduce(reducer, 0) + parseInt(newTax)).toFixed(2);
         const removeBtn = document.querySelectorAll('.removeItem');
         const chngQty = document.querySelectorAll('.adjust-quantity');
 
@@ -377,11 +406,12 @@ const showCartItemOnUI = () =>{
         Array.from(chngQty).forEach( i => {
             i.addEventListener('change',()=>{
                 const priceNode = i.parentNode.parentNode.children[2];
-                const priceNowNode = i.parentNode.parentNode.children[0].children[0].children[1].children[1];
-                const getOld = i.parentNode.parentNode.children[3];            
+                const priceNowNode = i.parentNode.parentNode.children[0].children[0].children[1].children[0].children[1];
+                const getOld = i.parentNode.parentNode.children[3];  
+                // console.log(i.parentNode.parentNode.children[0].children[0].children[1].children[2]);          
                 if(parseInt(i.value)){
                     changeQuantity(i.value, priceNode, priceNowNode);
-                    const addId = i.parentNode.parentNode.children[0].children[0].children[1].children[3].id;
+                    const addId = i.parentNode.parentNode.children[0].children[0].children[1].children[2].id;
                     let newQty =  parseInt(i.value) - parseInt(getOld.value);
                     thisItem = new Item(null, null,newQty, null, addId);
                     setValues(false);
@@ -392,6 +422,8 @@ const showCartItemOnUI = () =>{
             });
         });
 
+    }else{
+        console.log('all cleared');
     }
 }
 
@@ -434,6 +466,25 @@ const removeFromCart = (d) => {
            calculateSubTotal(i.price, i.quantity, true)
         }
     });
+
+    const cartJSON = localStorage.getItem('allItems');
+    const idd = localStorage.getItem('userId');
+
+    // removing item from database
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        document.querySelector(".dummyDiv").innerHTML = this.responseText;
+        // redirect();
+    }else{
+        // redirect();
+    }
+    };
+    xmlhttp.open("POST", "../libs/removeFrom.php", true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send(`data=${id}&id=${idd}`);
+    // removing item from database ends here
+
     showMessage('Item has been removed from cart successfully!');
     localStorage.setItem('allItems', JSON.stringify(newStore));
     localStorage.setItem('cartNum', itemNum);

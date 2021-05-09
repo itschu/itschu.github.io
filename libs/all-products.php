@@ -6,135 +6,26 @@
     $uniqueCat = array_unique($prodCat);
     sort($uniqueCat);
 
+    if(isset($_GET['cat'])){
+        $arr = $searchProducts;
+    }else{
+        $arr = $allProducts;
+    }
+
     $nn = array_map(function($curr){
         return $curr['name'];
-    }, $allProducts);
-    
+    }, $arr);
     $uniqueName = array_unique($nn);
     sort($uniqueName);
 ?>
 
 <section class="section products products-margin">
     <div class="products-layout container">
-        <div class="col-1-of-4">
-            <div>
-                <div class="block-title">
-                    <h3>Category</h3>
-                </div>
-                <ul class="block-content">
-                    <?php array_map(function($cur_cat){
-                        printf('
-                            <li>
-                                <input type="checkbox" name="" id="">
-                                <label for="">
-                                    <span>%s</span>
-                                    <!-- <small>(10)</small> -->
-                                </label>
-                            </li>
-                        ', $cur_cat);
-                    }, $uniqueCat); ?>
-                </ul>
-            </div>
 
-            <div>
-                <div class="block-title">
-                    <h3>Popular</h3>
-                </div>
-
-                <ul class="block-content">
-                    <li>
-                        <input type="checkbox" name="" id="">
-                        <label for="">
-                        <span>Rice</span>
-                        <!-- <small>(10)</small> -->
-                        </label>
-                    </li>
-
-                    <li>
-                        <input type="checkbox" name="" id="">
-                        <label for="">
-                        <span>Beans</span>
-                        <!-- <small>(7)</small> -->
-                        </label>
-                    </li>
-
-                    <li>
-                        <input type="checkbox" name="" id="">
-                        <label for="">
-                        <span> Garri</span>
-                        <!-- <small>(3)</small> -->
-                        </label>
-                    </li>
-
-                    <li>
-                        <input type="checkbox" name="" id="">
-                        <label for="">
-                        <span>Noodles</span>
-                        <!-- <small>(3)</small> -->
-                        </label>
-                    </li>
-
-                    <li>
-                        <input type="checkbox" name="" id="">
-                        <label for="">
-                        <span>Yams</span>
-                        <!-- <small>(3)</small> -->
-                        </label>
-                    </li>
-
-                    <li>
-                        <input type="checkbox" name="" id="">
-                        <label for="">
-                        <span>Potatoes</span>
-                        <!-- <small>(3)</small> -->
-                        </label>
-                    </li>
-
-                    <li>
-                        <input type="checkbox" name="" id="">
-                        <label for="">
-                        <span>Meat</span>
-                        <!-- <small>(3)</small> -->
-                        </label>
-                    </li>
-
-                    <li>
-                        <input type="checkbox" name="" id="">
-                        <label for="">
-                        <span>Fish</span>
-                        <!-- <small>(3)</small> -->
-                        </label>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="col-3-of-4">
-            <form action="">
-                <div class="item">
-                    <label for="sort-by">Sort By</label>
-                    <select name="sort-by" id="sort-by">
-                        <option value="title" selected="selected" disabled>Name</option>
-                        <?php foreach($uniqueName as $nam) : ?>
-                            <option value="<?php echo $nam; ?>"> <?php echo $nam; ?> </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="item">
-                    <label for="order-by">Sort By</label>
-                    <select name="order-by" id="sort-order">
-                        <option value="ASC" selected="selected" disabled>Category</option>
-                        <?php foreach($uniqueCat as $catt) : ?>
-                            <option value="<?php echo $catt; ?>"> <?php echo $catt; ?> </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <a href="">Apply</a>
-            </form>
+        <?php require_once('form-search-for-all-prod.php'); ?>
 
             <div class="product-layout">
-                <?php foreach($allProducts as $item) : ?>
+                <?php  foreach($allProducts as $item) {  ?>
 
                     <div class="product">
                         <a href="./productDetails.php?prod=<?php echo $item['unique_key'] ?>">
@@ -163,17 +54,20 @@
                             <input type='hidden' value="<?php echo $item['unique_key'] ?>" />
                         </a>
                     </div>
-                <?php endforeach; ?>
+                <?php }; ?>
             </div>
             
             <!-- PAGINATION -->
-            <ul class="pagination">
-                <span class="icon">››</span>
-                <span class="last">Prev</span>
-                <span>2</span>
-                <span class="last">Next <!-- » --></span>
-                <span class="icon">»›</span>
-            </ul>
+            <div class="bott" style="display: flex; align-items: center; justify-content: center; flex-direction: column; margin-bottom: 20px;">
+                <ul class="pagination">
+                    <span class="icon">››</span>
+                    <span class="last">Prev</span>
+                    <span>2</span>
+                    <span class="last">Next <!-- » --></span>
+                    <span class="icon">»›</span>
+                </ul>
+                <span style="justify-self: flex-end"> <b><?php echo count($allProducts) ?> Results</b> </span>
+            </div>
         </div>
     </div>
 </section>

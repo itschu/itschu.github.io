@@ -143,11 +143,11 @@ Product Details
   font-size: 1.49rem;
 }
 
-.price {
+.prices {
   margin-bottom: 1rem;
   display: flex;
   justify-content: flex-start;
-
+  font-weight: 600;
 }
 
 .new__price {
@@ -558,4 +558,10 @@ span.dot {
 .rating svg{
   fill: var(--primary);
   margin-right: 0.5rem;
+}
+
+
+.price{
+    display: flex;
+    justify-content: space-around;
 }

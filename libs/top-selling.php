@@ -3,7 +3,7 @@
         <h2>Top Selling Products</h2>
         <!-- <span>Select from the premium product brands and save plenty money</span> -->
     </div>
-    <div class="product-layout">
+    <div class="product-layout owl-carousel owl-theme">
         <?php foreach($allProducts as $item) { ?>
             <div class="product">
                 <a href="./productDetails.php?prod=<?php echo $item['unique_key'] ?>">
