@@ -1,6 +1,6 @@
 <?php
 
-require_once ('config.php');
+require_once ('.config.php');
 require_once ('sessions.php');
 
 function getProducts($con, $limit=16, $table="products_all"){
@@ -30,7 +30,7 @@ function searchProducts($con, $string, $category){
 	$stmt = $con->prepare("SELECT * FROM products_all WHERE name LIKE ? AND category = ? ");
 	$stmt->bind_param("ss", $string, $category);
 	$stmt->execute();
-	$res = $stmt->get_result();
+	$res = $stmt->fetch();
 	
 	$result = array();  
 	while($newRes = $res->fetch_assoc()){

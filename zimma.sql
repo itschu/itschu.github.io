@@ -41,10 +41,10 @@ CREATE TABLE `cart` (
 --
 
 INSERT INTO `cart` (`sn`, `user_id`, `prod_id`, `quantity`, `status`, `order_id`) VALUES
-(124, 'fb95c3c1d', 'L0920ROPs', '2', 'true', ''),
-(125, 'fb95c3c1d', '0oDklA3', '2', 'true', ''),
-(126, 'fb95c3c1d', '08iLK3bb', '2', 'true', ''),
-(127, 'c4b6b25d8', 'N89skO0As', '1', 'true', '');
+(1, 'fb95c3c1d', 'L0920ROPs', '2', 'true', ''),
+(2, 'fb95c3c1d', '0oDklA3', '2', 'true', ''),
+(3, 'fb95c3c1d', '08iLK3bb', '2', 'true', ''),
+(4, 'c4b6b25d8', 'N89skO0As', '1', 'true', '');
 
 -- --------------------------------------------------------
 
@@ -122,11 +122,6 @@ CREATE TABLE `users` (
 --
 -- Dumping data for table `users`
 --
-
-INSERT INTO `users` (`sn`, `unique_id`, `email`, `password`, `firstName`, `lastName`, `number`, `address`, `address2`, `country`, `state`, `terms`, `is_admin`, `joined`) VALUES
-(3, 'c4b6b25d8', 'palmerbideconcepts@gmail.com', '4b0ab7b94e92a4f175774a4ad8a9a8c4d273671086ef091a689d63d3752a53ba043a1daf6204c9d4043b24bb42e18903029b43acd5efeabf7f368c26d532ab6e', 'Joseph Chu', 'bide', '99999999999', 'east-west road', 'Abuja', 'Nigeria', 'Rivers', 'checked', '', ''),
-(4, 'fb95c3c1d', 'chu@gmail.com', '4b0ab7b94e92a4f175774a4ad8a9a8c4d273671086ef091a689d63d3752a53ba043a1daf6204c9d4043b24bb42e18903029b43acd5efeabf7f368c26d532ab6e', '', '', '', '', '', '', '', '', 'yes', '');
-
 --
 -- Indexes for dumped tables
 --

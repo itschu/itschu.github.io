@@ -1,7 +1,7 @@
 <?php
 
     require_once('../config/functions.php');
-    $allProducts = getProducts($con);
+    $allProducts = getProducts($con, 0);
     $productFound = false;
 ?>
 

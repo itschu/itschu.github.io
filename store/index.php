@@ -54,7 +54,7 @@
         <span>Exclusive Sales</span>
         <h1>UP TO 50% OFF ON SALES</h1>
         <small>Get all exclusive offers for the season</small>
-        <a href="">View Products </a>
+        <a href="#products">View Products </a>
         </div>
         <div class="right">
         <img src="../assets/images/bg-2.png" alt="" />
@@ -76,7 +76,7 @@
             </div>
         </div>
 
-        <div class="category-box">
+        <div class="category-bgitox">
             <img src="../assets/images/cat2.svg" alt="">
             <div class="content">
             <h2>Best Stores</h2>
