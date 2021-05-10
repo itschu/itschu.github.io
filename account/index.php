@@ -662,7 +662,7 @@
                 <div class="sidebar__title">
                 <div class="sidebar__img">
                     <!-- <img src="assets/logo.png" alt="logo" /> -->
-                    <h1>Zimarex</h1>
+                    <h1>    <a href="../store">Zimarex </a> </h1>
                 </div>
                 <i
                     onclick="closeSidebar()"

@@ -76,7 +76,7 @@
             </div>
         </div>
 
-        <div class="category-bgitox">
+        <div class="category-box">
             <img src="../assets/images/cat2.svg" alt="">
             <div class="content">
             <h2>Best Stores</h2>

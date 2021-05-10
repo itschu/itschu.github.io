@@ -1,12 +1,12 @@
 <!-- Navigation -->
     <nav class="nav addShadow">
         <div class="wrapper container">
-            <div class="logo"><a href="">Zimarex</a></div>
+            <div class="logo"><a href="/my-site/zimarex/">Zimarex</a></div>
             <ul class="nav-list">
                 <div class="top">
                     <label for="" class="btn close-btn"><i class="fas fa-times"></i></label>
                 </div>
-                <li><a href="index.php">Home</a></li>
+                <li><a href="/my-site/zimarex/index.php">Home</a></li>
                 <li><a href="./products.php">Products</a></li>
                 <li>
                     <a href="" class="desktop-item">Shop <span><i class="fas fa-chevron-down"></i></span></a>
