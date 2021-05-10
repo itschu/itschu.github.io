@@ -51,7 +51,7 @@ require_once('../config/functions.php');
 <body>
      <!-- Navigation -->
     <?php 
-        //require_once('../libs/nav.php') 
+        require_once('../libs/nav.php') 
     ?>
 
     <div class="showLoader" style="height : 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 50px">

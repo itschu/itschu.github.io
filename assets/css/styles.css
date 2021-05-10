@@ -394,9 +394,9 @@ nav .wrapper {
 .hero {
   height: calc(100vh - 6.5rem);
   background-color: var(--primary);
-  background-image: url(../images/bg.jpg);
-  /* background: url('../images/bg.jpg')no-repeat left top, linear-gradient(#eb01a5, #d13531); */
-  background:  linear-gradient(  to right, rgba(0, 0, 0, 0.7) 60%, transparent), url(../images/bg.jpg) no-repeat center center;
+  background-image: url(../images/bg.png);
+  /* background: url('../images/bg.png')no-repeat left top, linear-gradient(#eb01a5, #d13531); */
+  background:  linear-gradient(  to right, rgba(0, 0, 0, 0.7) 60%, transparent), url(../images/bg.png) no-repeat center center;
   background-position: center;
   background-size: cover;
   position: relative;
