@@ -162,22 +162,25 @@ if(isset($_POST['log'])){
                 (function (){
                     localStorage.setItem('userId', '<?php echo $id; ?>');
                 })();
+                redirect();
+                /**
+                    const cartJSON = localStorage.getItem('allItems');
+                    const idd = localStorage.getItem('userId');
 
-                const cartJSON = localStorage.getItem('allItems');
-                const idd = localStorage.getItem('userId');
+                    var xmlhttp = new XMLHttpRequest();
+                    xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.querySelector(".dummyDiv").innerHTML = this.responseText;
+                        redirect();
+                    }else{
+                        redirect();
+                    }
+                    };
+                    xmlhttp.open("POST", "../libs/addToCart.php", true);
+                    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    xmlhttp.send(`data=${cartJSON}&id=${idd}`);
 
-                var xmlhttp = new XMLHttpRequest();
-                xmlhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    document.querySelector(".dummyDiv").innerHTML = this.responseText;
-                    redirect();
-                }else{
-                    redirect();
-                }
-                };
-                xmlhttp.open("POST", "../libs/addToCart.php", true);
-                xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xmlhttp.send(`data=${cartJSON}&id=${idd}`);
+                */
 
             </script>
     <?php

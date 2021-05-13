@@ -37,6 +37,42 @@ if(isset($session_email)){
     }
 }
 
+if(isset($_GET['pp'])){
+
+$url = "https://api.paystack.co/transaction/initialize";
+$fields = [
+'email' => "igwechujoseph@gmail.com",
+'amount' => 10000,
+'reference' => "ddsjsddssns",
+'callback_url' => "https://google.com"
+];
+
+$fields_string = http_build_query($fields);
+//open connection
+$ch = curl_init();
+
+//set the url, number of POST vars, POST data
+curl_setopt($ch,CURLOPT_URL, $url);
+curl_setopt($ch,CURLOPT_POST, true);
+curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+"Authorization: Bearer sk_test_a7b277eaef1027fefe63674fca48268bbb8a6e1d",
+"Cache-Control: no-cache",
+));
+
+//So that curl_exec returns the contents of the cURL; rather than echoing it
+curl_setopt($ch,CURLOPT_RETURNTRANSFER, true); 
+
+//execute post
+$result = curl_exec($ch);
+$obj = json_decode($result);
+print_r($obj);
+$tran_url = $obj->data->authorization_url;
+header("Location: $tran_url");
+
+}
+//echo $result;
+
 
 
 ?>

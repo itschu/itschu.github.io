@@ -101,9 +101,8 @@ $(document).ready(function() {
             null,
             null
         ],
-        "order":false,
-        "bLengthChange":false,
-        "dom":'<"top">ct<"top"p><"clear">'
+        "order":true,
+        "bLengthChange":true,
     });
     $("#filterbox").keyup(function(){
         dataTable.search(this.value).draw();

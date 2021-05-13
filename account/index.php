@@ -1,6 +1,13 @@
 <?php
 
     require_once('../config/functions.php');
+    $url = $newUrl."";
+    
+
+    $name = $price = $old_price = $short_desc = $category = $name = $long_desc = $measurement =  "";
+    $reviews = 1; $purchases = 0;
+    $succ = "<strong>Hurray</strong> The operation was successful";
+    $error = "<strong>Opps</strong> Sorry an error ocurred. Try again later";
 
     if($ThisMyPath == false){
         header('location: ../store/login.php');
@@ -8,18 +15,97 @@
 
     $isAdmin = checkAdmin($con, $session_id);
     if($isAdmin == '1'){
+
         $all_prod = getProducts($con, 0);
-        
+        $all_users = getProducts($con, 0, "users");    
+
         if(isset($_GET['all-product'])){
             $showAllProducts = $_GET['all-product'];
             shuffle($all_prod);
         }else if(isset($_GET['all-users'])){
-            $all_users = getProducts($con, 0, "users");
             $showAllUsers = $_GET['all-users'];
             shuffle($all_users);
+        }else if(isset($_GET['add-product']) ){
+            $addProd = $_GET['add-product'];
+        }else if(isset($_GET['edit-this-item']) ){
+            $editProd = $_GET['edit-this-item'];
+            $detailsEachItem = getSingleProd($con, $editProd);
+            if(empty($detailsEachItem)){
+                unset($editProd);
+                unset($_GET['edit-this-item']);
+                $notFound = 'set';
+            }
+        }
+
+        if(isset($_POST['addProduct'])){
+            $unique_key = uniqid (rand (),true); 
+            $unique_key = str_replace('.','',$unique_key);
+            $unique_key = "n".$unique_key;
+            $date_added = date("d/m/Y");
+            $name = test_input($_POST['name']); $price = test_input($_POST['price']); $old_price = test_input($_POST['old-price']); $short_desc = test_input($_POST['short_desc']); $category = test_input($_POST['category']); $in_stock = test_input($_POST['in_stock']); $long_desc = test_input($_POST['long_desc']); $reviews = 1;$purchases = 0; $measurement = test_input($_POST['measurement']);
+            $imgUpload = "img_1";
+            $img_1 = uploadImg($category, $imgUpload);
+            $imgUpload = "img_2";
+            $img_2 = uploadImg($category, $imgUpload);
+            $imgUpload = "img_3";
+            $img_3 = uploadImg($category, $imgUpload);
+            $imgUpload = "img_4";
+            $img_4 = uploadImg($category, $imgUpload);
+            $imgUpload = "img_5";
+            $img_5 = uploadImg($category, $imgUpload);
+            if($img_1!==1 && $img_2!==1 && $img_3!==1 && $img_4!==1 && $img_5!==1){
+                $insertStat = addToProductList($con, $unique_key, $name, (double)$price, (double)$old_price, $short_desc, $category, (int)$in_stock, $img_1, $img_2, $img_3, $img_4, $img_5, $long_desc, (int)$reviews, $purchases, $date_added, $measurement);
+                //header("location : "$newUrl."index.php?add-product=true&product-status=$insertStat");
+                echo "<script>window.location.href='index.php?add-product=true&product-status=$insertStat';</script>";
+            }
         }
         
+        if(isset($_POST['editProduct'])){
+            $parseThisId = test_input($_POST['theId']);
+            $unique_key = uniqid (rand (),true); 
+            $date_added = date("d/m/Y");
+            $name = test_input($_POST['name']); $price = test_input($_POST['price']); $old_price = test_input($_POST['old-price']); $short_desc = test_input($_POST['short_desc']); $category = test_input($_POST['category']); $in_stock = test_input($_POST['in_stock']); $long_desc = test_input($_POST['long_desc']); $reviews = 1;$purchases = 0; $measurement = test_input($_POST['measurement']);
+            $imgUpload = "img_1";
+            $img_1 = uploadImg($category, $imgUpload);
+            $imgUpload = "img_2";
+            $img_2 = uploadImg($category, $imgUpload);
+            $imgUpload = "img_3";
+            $img_3 = uploadImg($category, $imgUpload);
+            $imgUpload = "img_4";
+            $img_4 = uploadImg($category, $imgUpload);
+            $imgUpload = "img_5";
+            $img_5 = uploadImg($category, $imgUpload);
+            if($img_1!==1 && $img_2!==1 && $img_3!==1 && $img_4!==1 && $img_5!==1){
+                $insertStat = addToProductList($con, $unique_key, $name, (double)$price, (double)$old_price, $short_desc, $category, (int)$in_stock, $img_1, $img_2, $img_3, $img_4, $img_5, $long_desc, (int)$reviews, $purchases, $date_added, $measurement, false, $parseThisId);
+                print_r($insertStat);
+                //header("Location : "$newUrl."index.php?add-product=true&product-status=$insertStat");
+                //echo "<script>window.location.href='index.php?add-product=true&product-status=$insertStat';</script>";
+            }
+        }
+
+        if(isset($_GET['delete-this-item']) && !isset($_GET['product-status'])){
+            $keyDel = $_GET['delete-this-item'];
+            $statDel = deleteItem($con, "products_all", $keyDel);
+            // echo $statDel;
+            header("Location: index.php?all-product=set&delete-this-item=true&product-status=$statDel");
+        }
+
+        if(isset($_GET['delete-this-user']) && !isset($_GET['product-status'])){
+            $keyDel = $_GET['delete-this-user'];
+            $statDel = deleteItem($con, "users", $keyDel, "unique_id");
+            // echo $statDel;
+            header("Location: index.php?all-users=set&edit-this-user=true&product-status=$statDel");
+        }
+
+        if(isset($_GET['make-admin']) && !isset($_GET['product-status'])){
+            $cuu = $_GET['cuu'];
+            $id = $_GET['id'];
+            $statDel = adminPriviledges($con, $id, $cuu);
+            // echo $statDel;
+            header("Location: index.php?all-users=set&edit-this-user=true&product-status=$statDel");
+        }
     }
+
     $showBill = false;
 
     if(isset($_GET['billing'])){
@@ -64,7 +150,9 @@
         <!-- form css -->
         <link href="https://getbootstrap.com/docs/5.0/dist/css/bootstrap.min.css" rel="stylesheet" >
 
-        
+        <!-- font awesome -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css">
+
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"crossorigin="anonymous"/>
 
         <!-- fonts -->
@@ -82,6 +170,26 @@
         <title>Dashboard - Zimarex | E-commerce Webstore</title>
 
         <style>
+            
+            .form .label {
+                text-align: center;
+                font-size: 0.77em;
+                margin: 5px;
+                font-weight: 600;
+            }
+
+            .btn input,  .btn button{
+                background: none;
+                border: none;
+                color: #fff;
+                font-weight: 600;
+                font-size: 0.9em;
+            }
+
+            .input{
+                font-size: 0.79em;
+            }
+
             .alert-success {
                 color: #3c763d;
                 background-color: #dff0d8;
@@ -122,6 +230,52 @@
                 text-transform : capitalize;
             }
 
+            .sidebar__img a{
+                color: #ba0303;
+                font-size: 1.7rem;
+                font-weight: 600;
+                text-decoration: none;
+                padding: 0.5rem;
+                border: 4px dashed #fff;
+            }
+
+
+            .alert {
+                margin-top: 40px;
+                text-align: center;
+                width: 100%;
+            }
+
+            .dataTables_filter {
+                visibility: hidden;
+                display: none;
+            }
+
+            .dataTables_info{
+                margin-top: 16px;
+                margin-left: 20px;
+                font-size: 0.95em;
+            }
+
+            .dataTables_length{
+                font-size: 0.95em;
+                margin: 25px;
+                font-weight: 600;
+            }
+
+            .dataTables_length select {
+                margin: 0px 10px;
+                border-radius: 50px;
+                padding: 6px;
+                background: #ffffff;
+                border: 1px solid #007bff;
+                color: #000000;
+                font-weight: 600;
+            }
+
+            .btn {
+                margin-top: 5px
+            }
         </style>
     </head>
     <body id="body">
@@ -134,16 +288,16 @@
                 </div>
 
                 <div class="navbar__left">
-                    <a href="../">Home</a>
+                    <a href="<?php echo $newUrl ?>store">Home</a>
                     <!-- <a href="#">Video Management</a> -->
                     <a class="active_link" href="#">Dashboard</a>
                 </div>
                 
                 <div class="navbar__right">
-                    <a href="../store/cart.php">
+                    <a href="<?php echo $newUrl ?>store/cart.php">
                         <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                     </a>
-                    <a href="#">
+                    <a href="<?php echo $newUrl ?>store" >
                         <img width="30" src="assets/avatar.svg" alt="" />
                         <!-- <i class="fa fa-user-circle-o" aria-hidden="true"></i> -->
                     </a>
@@ -175,6 +329,16 @@
                                 <span class="font-bold text-title"> <?php echo count($all_prod); ?> </span>
                             </div>
                         </div>
+
+
+
+                        <div class="cardss">
+                            <i class="fa fa-users fa-2x text-red" aria-hidden="true"></i>
+                            <div class="card_inner">
+                                <p class="text-primary-p">All Users</p>
+                                <span class="font-bold text-title"><?php echo count($all_users); ?></span>
+                            </div>
+                        </div>
                     <?php }else{  ?>
 
                         <div class="cardss">
@@ -184,16 +348,14 @@
                                 <span class="font-bold text-title">₦0</span>
                             </div>
                         </div>
-
-                    <?php }  ?>
-
-                    <div class="cardss">
-                        <i class="fa fa-sign-out fa-2x text-red" aria-hidden="true"></i>
-                        <div class="card_inner">
-                            <p class="text-primary-p">Delcined Orders</p>
-                            <span class="font-bold text-title">0</span>
+                        <div class="cardss">
+                            <i class="fa fa-sign-out fa-2x text-red" aria-hidden="true"></i>
+                            <div class="card_inner">
+                                <p class="text-primary-p">Delcined Orders</p>
+                                <span class="font-bold text-title">0</span>
+                            </div>
                         </div>
-                    </div>
+                    <?php }  ?>
 
                     <div class="cardss">
                         <i class="fa fa-question fa-2x text-yellow" aria-hidden="true"  ></i>
@@ -211,6 +373,39 @@
                         </div>
                     </div>
                 </div> 
+                
+                <div class="div" style="width: 100%; display:flex; justify-content: center;">
+                    <?php 
+                    if(isset($_GET['add-product']) || isset($_GET['delete-this-item'])  || isset($_GET['edit-this-user']) ):
+                        if( isset($_GET['product-status']) ): 
+                            $s = $_GET['product-status'];
+                            if($s == 'false'):
+                                echo "<div class='alert alert-danger'>
+                                    $error
+                                </div>";
+                            endif;
+                        endif;
+                    endif;
+
+                    if(isset($_GET['add-product']) || isset($_GET['delete-this-item'])  || isset($_GET['edit-this-user']) ):
+                        if( isset($_GET['product-status']) ): 
+                            $s = $_GET['product-status'];
+                            if($s == 'true'):
+                                echo "<div class='alert alert-success'>
+                                    $succ
+                                </div>";
+                            endif;
+                        endif;
+                    endif;
+                    
+                    if(isset($notFound)){
+                         echo "<div class='alert alert-danger'>
+                                This product was not found!!!
+                            </div>";
+                    }
+                    ?>
+                    
+                </div>
 
                 <!-- MAIN CARDS ENDS HERE -->
                 <?php if(isset($_POST['firstName']) && $stat == 1 ){ ?>
@@ -439,14 +634,14 @@
                     <?php } endif;  ?>
                     
                     <?php if($isAdmin == '1' && isset($showAllProducts)){  ?>
-                        <div class="charts__left" style=" overflow-x: scroll; padding: 0;">
+                        <div class="charts__left" style=" overflow-x: scroll; padding: 0;" id="add-this-prod">
                             <div class=" p-30">
                                 <div class="row">
                                     <div class="col-md-12 main-datatable">
                                         <div class="card_body">
                                             <div class="row d-flex">
                                                 <div class="col-sm-4 createSegment"> 
-                                                    <a class="btn dim_button create_new"> <i class="fa fa-plus"></i> Add New Product</a>
+                                                    <a class="btn dim_button create_new" href="?add-product=true"> <i class="fa fa-plus"></i> Add New Product</a>
                                                 </div>
                                                 <div class="col-sm-8 add_flex">
                                                     <div class="form-group searchInput">
@@ -491,11 +686,11 @@
 
                                                                 <td>
                                                                     <div class="btn-group">
-                                                                        <a class="dropdown-toggle dropdown_icon" data-toggle="dropdown">
+                                                                        <a href="<?php echo $newUrl ?>account/index.php?edit-this-item=<?php echo $element['unique_key']; ?>" class=" dropdown_icon">
                                                                         <i class="fa fa-pencil-square-o"></i> </a>
                                                                     </div>
                                                                     <span class="actionCust">
-                                                                        <a href="../store/productDetails.php?prod=<?php echo $element['unique_key'] ?>"><i class="fa fa-line-chart"></i></a>
+                                                                        <a href="<?php echo $newUrl ?>store/productDetails.php?prod=<?php echo $element['unique_key'] ?>"><i class="fa fa-line-chart"></i></a>
                                                                     </span>
                                                                     <div class="btn-group">
                                                                         <a class="dropdown-toggle dropdown_icon" data-toggle="dropdown">
@@ -503,12 +698,12 @@
                                                                         </a>
                                                                         <ul class="dropdown-menu dropdown_more">
                                                                             <li>
-                                                                                <a href="#" target="_black">
+                                                                                <a href="#" target="_black" style="cursor: pointer;">
                                                                                     <i class="fa fa-clone"></i>Duplicate
                                                                                 </a>
                                                                             </li>
                                                                             <li>
-                                                                                <a href="#" target="_black">
+                                                                                <a style="cursor: pointer;" onclick="confirmThisAction('<?php echo $element['unique_key'] ?>' );">
                                                                                     <i class="fa fa-trash"></i> Delete
                                                                                 </a>
                                                                             </li>
@@ -557,7 +752,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <?php $n=1; foreach($all_users as $element){  ?>
+                                                        <?php $n=1; foreach($all_users as $element){ $adminStat = $element['is_admin']; $adminId = $element['unique_id']; ?>
                                                             <tr>
                                                                 <td> <?php echo $n; ?> </td>
 
@@ -573,12 +768,12 @@
                                                                     <?php echo $element['joined'] ?> 
                                                                 </td>
 
-                                                                <td> <?php echo ($element['is_admin'] ? $element['is_admin'] : "") ?> </td>
+                                                                <td> <?php echo ($element['is_admin'] ? $element['is_admin'] : "No") ?> </td>
                                                                
                                                                 <td>
                                                                     <div class="btn-group">
-                                                                        <a class="dropdown-toggle dropdown_icon" data-toggle="dropdown">
-                                                                        <i class="fa fa-pencil-square-o"></i> </a>
+                                                                        <a href="mailto: <?php echo $element['email']; ?>" class="dropdown-toggle dropdown_icon" data-toggle="dropdown">
+                                                                        <i class="fa fa-envelope"></i> </a>
                                                                     </div>
                                                                     <div class="btn-group">
                                                                         <a class="dropdown-toggle dropdown_icon" data-toggle="dropdown">
@@ -586,13 +781,13 @@
                                                                         </a>
                                                                         <ul class="dropdown-menu dropdown_more">
                                                                             <li>
-                                                                                <a href="#" target="_black">
+                                                                                <a style="cursor: pointer;" onclick="confirmAdmin('<?php echo $adminStat; ?>', '<?php echo $adminId; ?>')" >
                                                                                     <i class="fa fa-check"></i>
                                                                                     <?php echo ($element['is_admin'] ? "Remove Admin" : "Make Admin") ?>
                                                                                 </a>
                                                                             </li>
                                                                             <li>
-                                                                                <a href="#" target="_black">
+                                                                                <a style="cursor: pointer;" onclick="confirmThisAction('<?php echo $element['unique_id'] ?>', 'user');">
                                                                                     <i class="fa fa-trash"></i> Delete
                                                                                 </a>
                                                                             </li>
@@ -609,6 +804,207 @@
                                 </div>
                             </div>
                         </div>
+                    <?php }else if($isAdmin == '1' && isset($addProd)){  ?>
+                            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>?add-product=true" method="POST" enctype="multipart/form-data">
+                                <div class="payment">
+                                    <div class="payment-logo">
+                                        <p>+</p>
+                                    </div>
+                                    
+                                    <h2>Add Product</h2>
+                                    <div class="form">
+
+                                        <div class="card space icon-relative">
+                                            <input type="text" class="input" required placeholder="Product Name" value="" name="name">
+                                            <i class="far fa-list-alt"></i>
+                                        </div>
+
+
+
+                                        <div class="card space icon-relative">
+                                            <input type="number" class="input"  min="1" placeholder="Price" value="" name="price" required >
+                                            <i class="far fa-money-bill-alt"></i>
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                            <input type="number" class="input" placeholder="Old Price" value="" min="1" name="old-price" required >
+                                            <i class="far fa-money-bill-alt"></i>
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                            <input type="text" class="input"  placeholder="Short Description" value="" name="short_desc" required >
+                                            <i class="far fa-edit"></i>
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                            <input type="text" class="input"  placeholder="Category" value="" name="category" required >
+                                            <i class="far fa-folder-open"></i>
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                            <input type="number" class="input"  placeholder="Number In stock" value="" min="1" name="in_stock" required >
+                                            <i style="bottom: 14px;" class="fas fa-calculator"></i>
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                            <input type="file" name="img_1" id="img_1" required class="input" >
+                                            <!-- <i class="far fa-credit-card"></i> -->
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                            <input type="file" name="img_2" id="img_2" required class="input" >
+                                            <!-- <i class="far fa-credit-card"></i> -->
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                            <input type="file" name="img_3" id="img_3" required class="input" >
+                                            <!-- <i class="far fa-credit-card"></i> -->
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                            <input type="file" name="img_4" id="img_4" required class="input" >
+                                            <!-- <i class="far fa-credit-card"></i> -->
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                            <input type="file" name="img_5" id="img_5" required class="input" >
+                                            <!-- <i class="far fa-credit-card"></i> -->
+                                        </div>
+                                        
+                                        <div class="card space icon-relative">
+                                            <input type="text" class="input"  placeholder="Measurement" value="" name="measurement" required >
+                                            <i style="bottom: 18px;" class="fas fa-balance-scale"></i>
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                            <textarea class="input" name="long_desc" cols="30" rows="6" placeholder="Long Description"></textarea>
+                                            <i class="far fa-keyboard"></i>
+                                        </div>
+                                        
+                                    </div>
+                                            
+                                    <div class="btn">
+                                        <input type="submit" value="Add Item" name="addProduct">
+                                    </div>
+                                </div>
+                            </form>
+                    <?php }else if($isAdmin == '1' && isset($editProd)){  ?>
+                            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>?edit-product=true" method="POST" enctype="multipart/form-data">
+                                <div class="payment">
+                                    
+                                    <h2>
+                                        Edit 
+                                        <?php echo $detailsEachItem['name']; ?> 
+                                        <img src="<?php echo $detailsEachItem['img_1']; ?>" alt="<?php echo $detailsEachItem['name']; ?>" width="60" height="50"> 
+                                    </h2>
+                                    <div class="form">
+
+                                        <div class="card space icon-relative">
+                                            <label class="label">Product Name</label>
+                                            <input type="text" class="input" required placeholder="Product Name" value="<?php echo $detailsEachItem['name']; ?>" name="name">
+                                            <i class="far fa-list-alt"></i>
+                                        </div>
+
+
+
+                                        <div class="card space icon-relative">
+                                            <label class="label">Price</label>
+                                            <input type="number" class="input"  min="1" placeholder="Price" value="<?php echo (int)$detailsEachItem['price']; ?>" name="price" required >
+                                            <i class="far fa-money-bill-alt"></i>
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                            <label class="label">Old Price</label>
+                                            <input type="number" class="input" placeholder="Old Price" value="<?php echo (int)$detailsEachItem['old_price']; ?>" min="1" name="old-price" required >
+                                            <i class="far fa-money-bill-alt"></i>
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                             <label class="label">Short Description</label>
+                                            <input type="text" class="input"  placeholder="Short Description" value="<?php echo $detailsEachItem['short_desc']; ?>" name="short_desc" required >
+                                            <i class="far fa-edit"></i>
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                             <label class="label">Category</label>
+                                            <input type="text" class="input"  placeholder="Category" value="<?php echo $detailsEachItem['category']; ?>" name="category" required >
+                                            <i class="far fa-folder-open"></i>
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                             <label class="label">Number In Stock:</label>
+                                            <input type="number" class="input"  placeholder="Number In stock" value="<?php echo (int)$detailsEachItem['in_stock']; ?>" min="1" name="in_stock" required >
+                                            <i style="bottom: 14px;" class="fas fa-calculator"></i>
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                            <label class="label">Main Image
+                                                <img class="imggg" src="<?php echo $detailsEachItem['img_1']; ?>" alt="<?php echo $detailsEachItem['name']; ?>" width="40" height="30"> 
+                                            </label>
+                                            <input type="file" name="img_1" id="img_1" class="input" >
+                                            <!-- <i class="far fa-credit-card"></i> -->
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                             <label class="label">Other Image
+                                                <img class="imggg" src="<?php echo $detailsEachItem['img_2']; ?>" alt="<?php echo $detailsEachItem['name']; ?>" width="40" height="30"> 
+                                            </label>
+                                            <input type="file" name="img_2" id="img_2" class="input" >
+                                            <!-- <i class="far fa-credit-card"></i> -->
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                             <label class="label">Other Image
+                                                <img class="imggg" src="<?php echo $detailsEachItem['img_3']; ?>" alt="<?php echo $detailsEachItem['name']; ?>" width="40" height="30"> 
+                                            </label>
+                                            <input type="file" name="img_3" id="img_3" class="input" >
+                                            <!-- <i class="far fa-credit-card"></i> -->
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                             <label class="label">Other Image
+                                                <img class="imggg" src="<?php echo $detailsEachItem['img_4']; ?>" alt="<?php echo $detailsEachItem['name']; ?>" width="40" height="30"> 
+                                            </label>
+                                            <input type="file" name="img_4" id="img_4" class="input" >
+                                            <!-- <i class="far fa-credit-card"></i> -->
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                             <label class="label">Other Image
+                                                <img class="imggg" src="<?php echo $detailsEachItem['img_5']; ?>" alt="<?php echo $detailsEachItem['name']; ?>" width="40" height="30"> 
+                                            </label>
+                                            <input type="file" name="img_5" id="img_5" class="input" >
+                                            <!-- <i class="far fa-credit-card"></i> -->
+                                        </div>
+                                        
+                                        <div class="card space icon-relative">
+                                             <label class="label">Measurement</label>
+                                            <input type="text" class="input"  placeholder="Measurement" value="<?php echo $detailsEachItem['measurement']; ?>" name="measurement" required >
+                                            <i style="bottom: 32px;" class="fas fa-balance-scale"></i>
+                                        </div>
+
+                                        <div class="card space icon-relative">
+                                             <label class="label">Long Description</label>
+                                            <textarea class="input" name="long_desc" cols="30" rows="6" placeholder="Long Description">
+                                                <?php echo $detailsEachItem['long_desc']; ?>
+                                            </textarea>
+                                            <i class="far fa-keyboard"></i>
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div class="btn">
+                                        <input type="hidden" value="<?php echo $detailsEachItem['unique_key']; ?>" name="theId">
+                                        <input type="submit" value="Add Item" name="editProduct">
+                                    </div>
+
+                                    <div class="btn" >
+                                        <button class="redirect">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
                     <?php }else if($isAdmin == '1' ) {  ?>
                             <div class="charts__left" >
                                 <div class="charts__left__title">
@@ -692,7 +1088,7 @@
 
                         <div class="sidebar__link">
                             <i class="fa fa-plus"></i>
-                            <a href="?billing=set">Add New Product</a>
+                            <a href="?add-product=true">Add New Product</a>
                         </div>
 
                         <div class="sidebar__link">
@@ -751,7 +1147,48 @@
                     form.classList.add('was-validated')
                 }, false)
                 })
-            })()
+            })();
+
+            const confirmThisAction = (e, type='item') =>{
+                let bool = confirm(`Are you dure you want to delete this ${type}?`);
+                if(bool){
+                    window.location.href = `<?php echo $newUrl ?>account/index.php?delete-this-${type}=${e}`;
+                }
+            }
+
+            const confirmAdmin = (stat, id) =>{
+                let trivia = stat ? "remove this user from being an Admin?" : "make this user an Admin?";
+                let bool = confirm(`Are you dure you want to ${trivia}`);
+                if(bool){
+                    window.location.href = `<?php echo $newUrl ?>account/index.php?make-admin=true&cuu=${stat}&id=${id}`;
+                }
+            }
+
+            const thisBtn = document.querySelector(".redirect");
+            if(thisBtn){
+                thisBtn.addEventListener("click", (e)=>{
+                    e.preventDefault();
+                    window.location.href='<?php echo $newUrl ?>account/?all-product=set';
+                });
+            }
+
+            const allImgs = document.querySelectorAll(".imggg");
+            let imgArr = Array.from(allImgs).map((e)=>{
+                return e;
+            });
+            // console.log();
+
+            const input = document.querySelectorAll("input[type='file']");
+            Array.from(input).forEach((e, i)=>{
+                e.addEventListener("change", ()=>{
+                   updateImg(e, i);
+                })
+            });
+
+            const updateImg = (e, i) => {
+                let newVal = e.value;
+                // imgArr[i].attributes[1].nodeValue = newVal;
+            }
         </script>
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

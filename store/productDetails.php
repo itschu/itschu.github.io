@@ -99,6 +99,12 @@
         #reviews {
             font-size: 1.65rem;
         }
+
+        /* @media only screen and (max-width: 768px){ */
+            .product__pictures, .product-details__btn {
+                margin-left: 2rem;
+            }
+        /* } */
     </style>
 
 </head>

@@ -6,7 +6,6 @@ $session_email = 'Account';
 if(isset($_SESSION['curr_user'])){
 	$session_id = $_SESSION['curr_user'];
 	$session_email = $_SESSION['curr_email'];
-	// $admin = $_SESSION['is_admin'];
 	
 	if($path == '/my-site/zimarex/store/login.php' or $path == '/my-site/zimarex/store/sign-up.php'){
 		$ThisMyPath = true;
@@ -17,10 +16,8 @@ if(isset($_SESSION['curr_user'])){
 }else{
 	$ThisMyPath = false;
 } 
-// $session_cart = $_SESSION['cart'] = array();
-//echo "<script> alert('$ThisMyPath');</script>";
 
-
+$newUrl = '/my-site/zimarex/';
 
 if(isset($_GET['logout'])){
 	session_destroy();

@@ -8,28 +8,28 @@
             <a href="#">Gift Certificates</a>
             <a href="#">Affiliate</a>
             <!-- <a href="#">Specials</a> -->
-            <!-- <a href="#">Site Map</a> -->
+            <a href="<?php echo $newUrl ?>sitemap.xml">Site Map</a>
             </div>
             <div class="footer-center">
             <h3>INFORMATION</h3>
             <a href="#">About Us</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms & Conditions</a>
-            <a href="#">Contact Us</a>
-            <!-- <a href="#">Site Map</a> -->
+            <a href="<?php echo $newUrl ?>privacy.php">Privacy Policy</a>
+            <a href="<?php echo $newUrl ?>terms.php">Terms & Conditions</a>
+            <a href="mailto: help@zimarex.com">Contact us via Mail</a>
+            <a href="tel:+2348133381982">Contact us Telephone</a>
             </div>
             <div class="footer-center">
             <h3>MY ACCOUNT</h3>
             <?php if(!isset($session_id)){  ?>
-                <a href="./login.php">Login</a>
-                <a href="./sign-up.php">Sign Up</a>
+                <a href="<?php echo $newUrl ?>store/login.php">Login</a>
+                <a href="<?php echo $newUrl ?>store/sign-up.php">Sign Up</a>
                 <?php }else{  ?>
-                <a href="../account">My Account</a>
-                <a href="../account">Order History</a>
+                <a href="<?php echo $newUrl ?>/account">My Account</a>
+                <a href="<?php echo $newUrl ?>/account">Order History</a>
                 <a href="#">Wish List</a>
                 <a href="#">Newsletter</a>
                 <!-- <a href="#">Returns</a> -->
-            <?php }; ?>
+            <?php }  ?>
             </div>
             <div class="footer-center">
             <h3>CONTACT US</h3>
@@ -37,22 +37,26 @@
                 <span>
                 <i class="fas fa-map-marker-alt"></i>
                 </span>
-                42 Dream House, Dreammy street, 7131 Dreamville, Nigeria
+                Along Eneka road by Igwuruta market after pipeline, Port-Harcourt, Nigeria.
             </div>
             <div>
-                <span>
-                <i class="far fa-envelope"></i>
-                </span>
-                support@zimarex.com
+                <a href="mailto:support@zimarex.com"> 
+                    <span>
+                    <i class="far fa-envelope"></i>
+                    </span>
+                    support@zimarex.com
+                </a>
             </div>
             <div>
-                <span>
-                <i class="fas fa-phone"></i>
-                </span>
-                456-456-4512
+                <a href="tel:+2348133381982">
+                    <span>
+                    <i class="fas fa-phone"></i>
+                    </span>
+                    +234 813 338 1982
+                </a>
             </div>
             <div class="payment-methods">
-                <img src="../assets/images/payment.png" alt="">
+                <img src="<?php echo $newUrl ?>assets/images/payment.png" alt="">
             </div>
             </div>
         </div>
@@ -60,3 +64,82 @@
         </div>
     </footer>
     <!-- End Footer -->
+
+    <?php 
+        if( isset($session_id) ){
+            $data = searchCart($con, $session_id);
+            $gblobalArray = [];
+            foreach($data as $item){
+                $thisId = $item['prod_id'];
+                $thisAmount = $item['quantity'];
+                $thisProdDetails = prodDetails($con, $thisId);
+
+                foreach($thisProdDetails as $newData){
+
+                    $itemName = $newData['name'];
+                    $itemPrice = $newData['price'];
+                    $itemUrl = $newData['img_1'];
+                    
+                    $newArr = array(
+                        'name' => $itemName,
+                        'price' => $itemPrice,
+                        'quantity' => (int)$thisAmount,
+                        'url' => $itemUrl,
+                        'id' => $thisId
+                    );
+                    $gblobalArray[] = $newArr;
+                }
+
+            }
+            // print_r($gblobalArray);
+            $jsonData = (json_encode($gblobalArray));
+    ?>
+            <script>
+                let updatingArr = [];
+                if(localStorage.getItem('allItems')){
+                    updatingArr = JSON.parse(localStorage.getItem('allItems'));
+                }
+                
+                let origArr = <?php echo $jsonData; ?>;
+                         
+                // console.log(origArr);            
+                // console.log(updatingArr);   
+                for(let i = 0, l = origArr.length; i < l; i++) {
+                    for(let j = 0, ll = updatingArr.length; j < ll; j++) {
+                        if(origArr[i].id === updatingArr[j].id) {
+                            // console.log()
+                            if(origArr[j] !== undefined){
+                                updatingArr.splice(i, 1, origArr[j]);
+                                // origArr.splice(i, 1, origArr[j]);
+                            }
+                            break;
+                        }
+                    }
+                }
+                let obj = {};
+
+                // Array.prototype.push.apply(updatingArr,origArr);
+                // console.log(origArr);
+                updatingArr = [...updatingArr, ...origArr];
+                 
+                for ( let i=0; i < updatingArr.length; i++ ){
+                    // console.log(obj)
+                    obj[updatingArr[i]['id']] = updatingArr[i];
+                }
+
+                updatingArr = new Array();
+                for ( let key in obj )
+                      updatingArr.push(obj[key]);
+
+                localStorage.setItem('allItems', JSON.stringify(updatingArr));
+                localStorage.setItem('cartNum', updatingArr.length);
+            </script>
+    <?php }else{ ?>
+            <script>
+                // console.log("not logged in");
+                localStorage.setItem("userId", "0");
+                // console.log(localStorage.getItem('userId'));
+            </script>
+    <?php } ?>
+
+

@@ -285,6 +285,9 @@ const setValues = (checkMsg=true) =>{
 
     //updating local storage
     localStorage.setItem('allItems', JSON.stringify(cartArray));
+
+    //updating database
+    updateDatabase();
 }
 
 if(addToCartButton){
@@ -293,7 +296,6 @@ if(addToCartButton){
         addToCart2();
     });
 }; 
-
 
 if(buyButton){
     buyButton.addEventListener("click", e => {
@@ -339,7 +341,7 @@ const showCartItemOnUI = () =>{
                 <a href="moveToCart.php" class="checkout btn">Proceed To Checkout</a>
             </div>
         `;
-        
+        cartContainer.classList.remove('showLoader');
         const tableContainer = document.querySelector('.cart-table');
         const finPrice = document.querySelector('.final-price');
         const subPrice = document.querySelector('.sub-price');
@@ -408,10 +410,10 @@ const showCartItemOnUI = () =>{
                 const priceNode = i.parentNode.parentNode.children[2];
                 const priceNowNode = i.parentNode.parentNode.children[0].children[0].children[1].children[0].children[1];
                 const getOld = i.parentNode.parentNode.children[3];  
+                const addId = i.parentNode.parentNode.children[0].children[0].children[1].children[2].id;
                 // console.log(i.parentNode.parentNode.children[0].children[0].children[1].children[2]);          
                 if(parseInt(i.value)){
                     changeQuantity(i.value, priceNode, priceNowNode);
-                    const addId = i.parentNode.parentNode.children[0].children[0].children[1].children[2].id;
                     let newQty =  parseInt(i.value) - parseInt(getOld.value);
                     thisItem = new Item(null, null,newQty, null, addId);
                     setValues(false);
@@ -419,11 +421,19 @@ const showCartItemOnUI = () =>{
                 }else{
                     i.value = getOld.value;
                 }
+                const databaseData = {
+                    id : addId,
+                }
+                const param = [databaseData];
+                // console.log(param);
+                updateDatabase (param);
+
             });
+                updateDatabase ();
         });
 
     }else{
-        console.log('all cleared');
+        // console.log('all cleared');
     }
 }
 
@@ -453,6 +463,7 @@ const showMessage = (message) => {
 
 const removeFromCart = (d) => {
     const id = d.id;
+    const numBtn = document.querySelector('.cart-items');
     let parentEl = d.parentElement.parentElement.parentElement.parentElement;
     parentEl.parentElement.removeChild(parentEl);
     let itemNum = parseInt(localStorage.getItem('cartNum'));
@@ -467,6 +478,15 @@ const removeFromCart = (d) => {
         }
     });
 
+    //updating the number on the cart button
+    /** 
+     * 
+     * another way of also updating it is this
+     * numBtn.innerText = itemNum;
+     *
+     */
+    let itemsNum = parseInt(numBtn.innerText) - 1;
+    numBtn.innerText = itemsNum;
     const cartJSON = localStorage.getItem('allItems');
     const idd = localStorage.getItem('userId');
 
@@ -488,6 +508,27 @@ const removeFromCart = (d) => {
     showMessage('Item has been removed from cart successfully!');
     localStorage.setItem('allItems', JSON.stringify(newStore));
     localStorage.setItem('cartNum', itemNum);
+
+    //if cart is empty
+    if(itemNum < 1){
+        const tableContainer = document.querySelector('.cart-table');
+        document.querySelector('.final-price').innerText = "₦0.00";
+        document.querySelector('.sub-price').innerText = "₦0.00";
+        document.querySelector('.tax').innerText = "₦0";
+
+        let newMockUp = `
+            <tr> 
+                <td colspan='1000'> 
+                    <p style="text-align: center; margin: 20px 0;"> 
+                        <strong> Your cart is empty!! </strong>
+                    </p> 
+                </td>
+            </tr>`;
+        tableContainer.insertAdjacentHTML("beforeend", newMockUp);
+
+    }
+    //if cart is empty ends here
+
 }
 
 const calculateSubTotal = (amount, quantity, type=true, ifInputLesser=true) => {
@@ -529,4 +570,20 @@ const changeQuantity = (val, nod, thisPrice) => {
 
     nod.innerText = "₦"+setToThis.toFixed(2);
     calculateSubTotal(subPrice,1,false,false);
+}
+
+const updateDatabase = (data2=localStorage.getItem('allItems')) =>{
+    
+    const idd = localStorage.getItem('userId');
+    // console.log(cartJSON);
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        // document.querySelector(".dummyDiv").innerHTML = this.responseText;
+        // console.log('done!!');
+    }
+    };
+    xmlhttp.open("POST", "../libs/addToCart.php", true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send(`data=${data2}&id=${idd}`);
 }

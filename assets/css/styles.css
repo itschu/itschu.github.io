@@ -474,11 +474,13 @@ nav .wrapper {
   }
 
   .hero .right img {
-    height: 35rem;
+    height: 20rem;
+    display: none;
   }
 
   .hero .right {
-    right: -10%;
+    bottom: 15%;
+    right: 0%;
   }
 }
 
@@ -488,11 +490,15 @@ nav .wrapper {
   }
 
   .hero .right img {
-    height: 30rem;
+    height: 22rem;
+    display: none;
+    /* right: 100px; */
+    width: 1rem;
   }
 
   .hero .right {
-    right: -18%;
+    bottom: 0%;
+    right: -7%;
   }
 
   .hero .left span {
