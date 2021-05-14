@@ -364,13 +364,13 @@ function getBillDetails($con, $string){
 function prinCategoryItem($cur_item){
 	printf('
 		<li>
-			<input type="checkbox" name="" id="">
-			<label for="">
-			<span>%s</span>
+			<input type="checkbox" name="" class="input-products" value="%s" data-include="%s">
+			<label for="" class="span-prod-name">
+			<span >%s</span>
 			<!-- <small>(10)</small> -->
 			</label>
 		</li>
-	', $cur_item);
+	', $cur_item, $cur_item, $cur_item);
 	return $cur_item;
 }
 
@@ -397,4 +397,38 @@ function uploadImg ($category, $imgUpload){
 	}
 }
 
+function printRedirect($idd, $url){
+	echo "
+	<script>
+                const redirect = () => {
+                    setTimeout(() => {
+                        window.location.href = '$url';
+                    }, 1200);
+                }
+
+                (function (){
+                    localStorage.setItem('userId', '$idd');
+                })();
+                redirect();
+                /**
+                    const cartJSON = localStorage.getItem('allItems');
+                    const idd = localStorage.getItem('userId');
+
+                    var xmlhttp = new XMLHttpRequest();
+                    xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.querySelector('.dummyDiv').innerHTML = this.responseText;
+                        redirect();
+                    }else{
+                        redirect();
+                    }
+                    };
+                    xmlhttp.open('POST', '../libs/addToCart.php', true);
+                    xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                    xmlhttp.send(`data=${cartJSON}&id=${idd}`);
+
+                */
+
+            </script>";
+}
 ?> 

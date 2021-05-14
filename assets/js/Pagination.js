@@ -16,9 +16,13 @@ const addListener = () =>{
     });
 }
 
-const pagination = () => {
+const pagination = (eI=null) => {
     prodContainer.innerHTML = "";
-    displayItems(eachItem, prodContainer);
+    if(eI!==null){
+        displayItems(eI, prodContainer);
+    }else{
+        displayItems(eachItem, prodContainer);
+    }
     //renderButton();
     // addListener();
 }
@@ -30,6 +34,7 @@ const displayItems = (array, container, page=1, resPerPage=9) =>{
         const start = (page-1)* resPerPage;
         const end = page * resPerPage;
         prodContainer.innerHTML = "";
+        let counter=0;
          Array.from(array).slice(start, end).forEach((el)=>{
             const prodId = el.children[2].value;
             let href = el.children[0].attributes[0].nodeValue;
@@ -41,7 +46,7 @@ const displayItems = (array, container, page=1, resPerPage=9) =>{
 
             href = href.replace('./productDetails.php?prod=','');
             const mockUp = `
-                <div class="product">
+                <div  id="id-${counter}" class="product" data-prodname="${thisTitle}">
                     <a href="./productDetails.php?prod=${href}">
                         <div class="img-container">
                             ${(parseInt(thisOldPrice)) ? `<div class="tag _dsct">${percent}</div>` : `<div class="tag _dsct" style="display: none">${percent}</div>` }
@@ -57,7 +62,7 @@ const displayItems = (array, container, page=1, resPerPage=9) =>{
                         </div>
 
                         <div class="bottom">
-                            <a href="">${thisTitle}</a>
+                            <a>${thisTitle}</a>
                             <div class="price">
                                 <span>₦${thisPrice}</span>
                                 <input type="hidden" value="${thisOldPrice}" name="old price">
@@ -70,7 +75,7 @@ const displayItems = (array, container, page=1, resPerPage=9) =>{
                 </div>
             `;
             container.insertAdjacentHTML('beforeend', mockUp);
-
+            counter++;
         });
 
         const productRendered = document.getElementsByClassName("product");

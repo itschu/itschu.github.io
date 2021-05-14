@@ -5,6 +5,13 @@ if($ThisMyPath == true){
 	header('location: index.php');
 }
 
+$append="";
+if(isset($_GET['return'])){
+    $val = $_GET['return'];
+    $append="?return=$val";
+}
+
+$senTo = htmlspecialchars($_SERVER["PHP_SELF"]).$append;
 
 if(isset($_POST['log'])){
 	$email = test_input($_POST['email']);
@@ -105,7 +112,7 @@ if(isset($_POST['log'])){
         <div class="contentBx">
             <div class="formBx">
                 <h2>Login</h2>
-                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" id="form" method="post">
+                <form action="<?php echo $senTo ?>" id="form" method="post">
 
                     <div class="inputBx form-control">
                         <span>Email</span>
@@ -151,39 +158,17 @@ if(isset($_POST['log'])){
     
     <?php
         if(isset($_POST['log']) && isset($succ)) :
-    ?>
-            <script>
-                const redirect = () => {
-                    setTimeout(() => {
-                        window.location.href = "../account/";
-                    }, 1200);
+            if(isset($_GET['return'])){
+                $path = $_GET['return'];
+                if($path == 'checkout'){
+                    $link = $newUrl."store/checkout.php";
+                    printRedirect($id, $link);
+                }else{
+                    printRedirect($id, "../account/");
                 }
-
-                (function (){
-                    localStorage.setItem('userId', '<?php echo $id; ?>');
-                })();
-                redirect();
-                /**
-                    const cartJSON = localStorage.getItem('allItems');
-                    const idd = localStorage.getItem('userId');
-
-                    var xmlhttp = new XMLHttpRequest();
-                    xmlhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        document.querySelector(".dummyDiv").innerHTML = this.responseText;
-                        redirect();
-                    }else{
-                        redirect();
-                    }
-                    };
-                    xmlhttp.open("POST", "../libs/addToCart.php", true);
-                    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                    xmlhttp.send(`data=${cartJSON}&id=${idd}`);
-
-                */
-
-            </script>
-    <?php
+            }else{
+                printRedirect($id, "../account/");
+            }
         endif;
 
         if(isset($_GET['logout-now'])){

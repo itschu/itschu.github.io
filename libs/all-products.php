@@ -25,9 +25,9 @@
         <?php require_once('form-search-for-all-prod.php'); ?>
 
             <div class="product-layout">
-                <?php  foreach($allProducts as $item) {  ?>
+                <?php $n=0; foreach($allProducts as $item) {  ?>
 
-                    <div class="product">
+                    <div id="id-<?php echo $n; ?>" class="product" data-prodName="<?php echo $item['name'] ?>" data-prodCat="<?php echo $item['category'] ?>">
                         <a href="./productDetails.php?prod=<?php echo $item['unique_key'] ?>">
                             <div class="img-container">
                                 <div class="tag _dsct">-8%</div>
@@ -43,7 +43,7 @@
                             </div>
 
                             <div class="bottom">
-                                <a href=""><?php echo $item['name'] ?></a>
+                                <a><?php echo $item['name'] ?></a>
                                 <div class="price">
                                     <span>₦<?php echo $item['price'] ?></span>
                                     <input type="hidden" value="<?php echo $item['old_price'] ?>" name="old price">
@@ -54,7 +54,7 @@
                             <input type='hidden' value="<?php echo $item['unique_key'] ?>" />
                         </a>
                     </div>
-                <?php }; ?>
+                <?php $n++; }; ?>
             </div>
             
             <!-- PAGINATION -->

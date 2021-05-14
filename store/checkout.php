@@ -1,6 +1,12 @@
 <?php
 
 require_once('../config/functions.php');
+if($ThisMyPath == false){
+    if(isset($_POST['pay-now'])){
+        header('location: ../store/index.php?return=checkout');
+    }
+    header('location: ../store/login.php?return=checkout');
+}
 
 $firstName = "";
 $lastName = "";
@@ -37,38 +43,63 @@ if(isset($session_email)){
     }
 }
 
-if(isset($_GET['pp'])){
+if(isset($_POST['pay-now'])){
 
-$url = "https://api.paystack.co/transaction/initialize";
-$fields = [
-'email' => "igwechujoseph@gmail.com",
-'amount' => 10000,
-'reference' => "ddsjsddssns",
-'callback_url' => "https://google.com"
-];
-
-$fields_string = http_build_query($fields);
-//open connection
-$ch = curl_init();
-
-//set the url, number of POST vars, POST data
-curl_setopt($ch,CURLOPT_URL, $url);
-curl_setopt($ch,CURLOPT_POST, true);
-curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-"Authorization: Bearer sk_test_a7b277eaef1027fefe63674fca48268bbb8a6e1d",
-"Cache-Control: no-cache",
-));
-
-//So that curl_exec returns the contents of the cURL; rather than echoing it
-curl_setopt($ch,CURLOPT_RETURNTRANSFER, true); 
-
-//execute post
-$result = curl_exec($ch);
-$obj = json_decode($result);
-print_r($obj);
-$tran_url = $obj->data->authorization_url;
-header("Location: $tran_url");
+    $ref_id = md5(uniqid(time(), true));
+    $name = test_input($_POST['firstName'])." ".test_input($_POST['lastName']);
+    $date = date("d/m/Y");
+    $price = test_input($_POST['order_amount']);
+    $params = array(
+		'tran_id'=>"$ref_id",
+		'email'=> test_input($_POST['email']),
+		'amount'=> str_replace("₦","",$price),
+		'order_id'=> test_input($_POST['order_id']),
+		'name'=> "$name",
+		'number'=> test_input($_POST['number']),
+		'address1'=> test_input($_POST['address']),
+		'address2'=> test_input($_POST['address2']),
+		'date_init'=>"$date",
+		'user_id'=>"$session_id",
+		'payment_status'=>"pending",
+		'date_finished'=>""
+	);
+    $h = insertData($con, $params, null, null, null, 'transactions');
+    if($h){
+        $price_now = str_replace("₦","",$price);
+        $price_now = (int)$price_now * 100;
+        $url = "https://api.paystack.co/transaction/initialize";
+        $fields = [
+            'email' => test_input($_POST['email']),
+            'amount' => $price_now,
+            'reference' => $ref_id,
+            'callback_url' => 'http://zimarex.com/payment/status.php'
+        ];
+        
+        $fields_string = http_build_query($fields);
+        //open connection
+        $ch = curl_init();
+        
+        //set the url, number of POST vars, POST data
+        curl_setopt($ch,CURLOPT_URL, $url);
+        curl_setopt($ch,CURLOPT_POST, true);
+        curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        "Authorization: Bearer sk_test_a7b277eaef1027fefe63674fca48268bbb8a6e1d",
+        "Cache-Control: no-cache",
+        ));
+        
+        //So that curl_exec returns the contents of the cURL; rather than echoing it
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER, true); 
+        
+        //execute post
+        $result = curl_exec($ch);
+        $obj = json_decode($result);
+        $tran_url = $obj->data->authorization_url;
+        header("Location: $tran_url");
+        
+    }else{
+        //error occurred
+    }
 
 }
 //echo $result;
@@ -173,12 +204,69 @@ header("Location: $tran_url");
         .form-check-label{
             font-size: .88em;
         }
+
+        .overlay {
+            visibility: hidden;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            position: fixed;
+            background: #222e;
+        }
+
+        .overlay__inner {
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+        }
+
+        .overlay__content {
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .spinner {
+            width: 75px;
+            height: 75px;
+            display: inline-block;
+            border-width: 2px;
+            border-color: rgba(255, 255, 255, 0.05);
+            border-top-color: #fff;
+            animation: spin 1s infinite linear;
+            border-radius: 100%;
+            border-style: solid;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .see{
+            visibility: visible;
+        }
     </style>
     
     <!-- Custom styles for this template -->
 
   </head>
   <body class="bg-light">
+
+        <div class="overlay">
+            <div class="overlay__inner">
+                <div class="overlay__content">
+                    <span class="spinner"></span>
+                    <p style="color: #fff; font-weight: bold; margin-left: -10px;">Please Wait</p>
+                </div>
+            </div>
+        </div>
     
         <?php require_once('../libs/nav.php') ?>
 
@@ -216,7 +304,7 @@ header("Location: $tran_url");
         </div>
             <div class="col-md-7 col-lg-8">
                 <h4 class="mb-3">Billing address</h4>
-                <form class="needs-validation" novalidate action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" name="form" method="post">
+                <form id="pay-now" class="needs-validation" novalidate action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" name="form" method="post">
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="firstName" class="form-label"> <b>First name</b> </label>
@@ -247,7 +335,7 @@ header("Location: $tran_url");
 
                         <div class="col-7">
                             <label for="email" class="form-label"> <b>Email</b> <span class="text-muted"></span></label>
-                            <input type="email" class="form-control" id="email" placeholder="you@mail.com" required name="email" value="<?php echo $thisEmail; ?>" <?php if($thisEmail != '') echo "disabled" ?> >
+                            <input type="email" class="form-control" id="email" placeholder="you@mail.com" required name="email" value="<?php echo $thisEmail; ?>" <?php if($thisEmail != '') echo "readonly" ?> >
                             <div class="invalid-feedback">
                                 Please enter a valid email address for shipping updates.
                             </div>
@@ -306,7 +394,7 @@ header("Location: $tran_url");
 
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="terms" required name="terms" <?php echo $terms; ?>>
-                        <label class="form-check-label" for="save-info">I agree to the terms and conditions</label>
+                        <label class="form-check-label" for="save-info"> <a href="<?php echo $newUrl ?>terms.php"> I agree to the terms and conditions </a></label>
                     </div>
 
                     <?php if(isset($newDetails)){ ?>
@@ -320,8 +408,12 @@ header("Location: $tran_url");
                     <?php } ?>
 
                     <hr class="my-4" style="opacity: 0.09">
+                    <input type="hidden" name='pay-now' value="set">
+                    <input type="hidden" class='order_id' name="order_id" value="" >
+                    <input type="hidden" class='order_amount' name="order_amount" value="">
 
-                    <button class="w-100 btn btn-primary btn-lg" type="submit" style="border: none; font-size: 0.9em;">Continue</button>
+
+                    <button class="w-100 btn btn-primary btn-lg" type="submit" style="border: none; font-size: 0.9em;">Pay Now</button>
                 </form>
             </div>
         </div>
@@ -333,31 +425,53 @@ header("Location: $tran_url");
 
     <script src="https://getbootstrap.com/docs/5.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
-    <script> 
-        // Example starter JavaScript for disabling form submissions if there are invalid fields
-        (function () {
-        'use strict'
-
-        // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        var forms = document.querySelectorAll('.needs-validation')
-
-        // Loop over them and prevent submission
-        Array.prototype.slice.call(forms)
-            .forEach(function (form) {
-            form.addEventListener('submit', function (event) {
-                if (!form.checkValidity()) {
-                event.preventDefault()
-                event.stopPropagation()
-                }
-
-                form.classList.add('was-validated')
-            }, false)
-            })
-        })()
-    </script>
     <script src="../assets/js/products.js"></script>
     <script src="../assets/js/slider.js"></script>
     <script src="../assets/js/index.js"></script>
     <script src="../assets/js/checkout.js"></script>
+
+    <script> 
+        const uniqueID = () => {
+            return new Date().getTime().toString().concat(performance.now());
+        }
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            let forms = document.querySelectorAll('.needs-validation')
+            const overlay = document.querySelector('.overlay');
+            const order_id = document.querySelector('.order_id');
+            const order_amount = document.querySelector('.order_amount');
+            const allElem = [...document.querySelectorAll('.pad-list-item')];
+            
+            const newElem = allElem.map(e=>{
+                return e.children[2].value;
+            });
+            let uniId = uniqueID();
+            uniId = "id"+uniId.replace('.', '');
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation()
+                    }else{
+                        event.preventDefault();
+                        overlay.classList.add("see");
+                        let condtiton = addToOrders(uniId, newElem);
+                        if(condtiton == newElem.length){
+                            // console.log(condtiton);
+                            order_id.value=uniId;
+                            order_amount.value=last_price.innerText;
+                            form.submit();
+                        }
+                    }
+
+                    form.classList.add('was-validated')
+                }, false);
+            })
+        })()
+    </script>
   </body>
 </html>

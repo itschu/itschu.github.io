@@ -6,7 +6,7 @@ const password2 = document.getElementById('password2');
 form.addEventListener('submit', e => {
 	e.preventDefault();
 	const getRes = checkInputs();
-	console.log(getRes)
+	//console.log(getRes)
 	if(getRes == 3){
 		form.submit();	
 	}

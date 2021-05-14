@@ -98,6 +98,9 @@
     <script src="../assets/js/slider.js"></script>
     <script src="../assets/js/index.js"></script>
     <script src="../assets/js/Pagination.js"> </script>
+    <script>
+        addCheckFilter();
+    </script>
 </body>
 
 </html>

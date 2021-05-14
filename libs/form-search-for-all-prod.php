@@ -7,7 +7,7 @@
                     <?php  array_map(function($cur_cat){
                         printf('
                             <li>
-                                <!--input type="checkbox" name="" id=""> -->
+                                <!-- <input type="checkbox" name="" id=""> -->
                                 <label for="">
                                     <span class="cat-label">%s</span>
                                     <!-- <small>(10)</small> -->

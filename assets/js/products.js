@@ -61,7 +61,7 @@ if(localStore == ''){
 // Picture List 
 
 const picList = [pic1, pic2, pic3, pic4, pic5];
-
+let newElements = [];
 // Active Picture
 let picActive = 1; 
 
@@ -586,4 +586,35 @@ const updateDatabase = (data2=localStorage.getItem('allItems')) =>{
     xmlhttp.open("POST", "../libs/addToCart.php", true);
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send(`data=${data2}&id=${idd}`);
+}
+
+const addCheckFilter = () => {
+    const checkBoxes = [...document.querySelectorAll(".input-products")];
+    checkBoxes.map(e=>{
+        e.addEventListener('change', (evnt) => {
+            filterResult(evnt);
+
+        });
+    });
+}
+
+const filterResult = e =>{
+    if(e.target.checked){
+        eachItem.forEach((el, index)=>{
+            if(el.dataset.prodname == e.target.value){
+                newElements.push(el.id);
+                // pagination(newElements);
+                console.log(newElements);
+            }
+        });
+        // console.log(newElements);
+    }else{
+        eachItem.forEach((el, index)=>{
+            if(el.dataset.prodname == e.target.value){
+                newElements.pop(el.id);
+                // pagination(newElements);
+                console.log(newElements);
+            }
+        });
+    }
 }

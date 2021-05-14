@@ -73,21 +73,23 @@
                 $thisId = $item['prod_id'];
                 $thisAmount = $item['quantity'];
                 $thisProdDetails = prodDetails($con, $thisId);
+                // print_r($thisProdDetails);
+                if(!empty($thisProdDetails)){
+                    foreach($thisProdDetails as $newData){
 
-                foreach($thisProdDetails as $newData){
-
-                    $itemName = $newData['name'];
-                    $itemPrice = $newData['price'];
-                    $itemUrl = $newData['img_1'];
-                    
-                    $newArr = array(
-                        'name' => $itemName,
-                        'price' => $itemPrice,
-                        'quantity' => (int)$thisAmount,
-                        'url' => $itemUrl,
-                        'id' => $thisId
-                    );
-                    $gblobalArray[] = $newArr;
+                        $itemName = $newData['name'];
+                        $itemPrice = $newData['price'];
+                        $itemUrl = $newData['img_1'];
+                        
+                        $newArr = array(
+                            'name' => $itemName,
+                            'price' => $itemPrice,
+                            'quantity' => (int)$thisAmount,
+                            'url' => $itemUrl,
+                            'id' => $thisId
+                        );
+                        $gblobalArray[] = $newArr;
+                    }
                 }
 
             }
